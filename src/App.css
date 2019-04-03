@@ -19,15 +19,22 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.iframe-load-error {
+  padding: 5em;
+  background-color: #880000;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.iframe-container {
+  width: 65%;
+}
+
+.iframe-loading {
+  position: relative;
+  top: 60px;
+  margin: 0px 40px;
+  height: 0px;
+}
+.iframe-loading span {
+  padding: 40px 20vw;
+  background-color: rgba(35, 35, 35, 0.95);
 }
