@@ -7,7 +7,7 @@ export interface IframeHostProps {
 
 export default function IframeHost(props: IframeHostProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
-  const [height, setHeight] = useState(0)
+  const [height, setHeight] = useState(400)
   const [loadTimeout, setLoadTimeout] = useState(false)
   const [showLoading, setShowLoading] = useState(true)
 
@@ -19,34 +19,25 @@ export default function IframeHost(props: IframeHostProps) {
     iframeRef.current.style.height = Math.max(height, 25) + 'px'
   }, [height])
 
-  // Sync iframe height with the content height
-  // First time called on load to adapt height to the rendered content
-  // Second time is called on ready event when iframe content rendered itself properly and add more items
-  const syncIframeHeight = useCallback(() => {
-    setHeight(
-      iframeRef.current && iframeRef.current.contentWindow
-        ? iframeRef.current.contentWindow.document.documentElement.scrollHeight
-        : height
-    )
-  }, [height])
-
   useEffect(() => {
     const messageHandler = (event: MessageEvent) => {
       console.log('HOST:', event)
-      let data
+      let messageData
       try {
-        data = JSON.parse(event.data)
+        messageData = JSON.parse(event.data)
       } catch {
         return
       }
       // Data should be an object and type should match custom_embed
-      if (!data || data.type !== 'custom_embed') {
+      if (!messageData || messageData.type !== 'custom_embed') {
         return
       }
-      if (data.subtype === 'ready') {
+      if (messageData.subtype === 'ready') {
         setShowLoading(false)
         clearTimer()
-        syncIframeHeight()
+        if (messageData.data && messageData.data.height) {
+          setHeight(Number.parseInt(messageData.data.height))
+        }
       }
     }
     const iframeLoadTimeout = () => {
@@ -82,7 +73,6 @@ export default function IframeHost(props: IframeHostProps) {
         frameBorder="0"
         scrolling="no"
         src={props.source}
-        onLoad={syncIframeHeight}
       />
     </div>
   )

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import './App.css'
-import IframeHost from './IframeHost'
+import SearchPanel from './SearchPanel'
 import Header from './Header'
 
 class App extends Component {
@@ -8,8 +8,9 @@ class App extends Component {
     return (
       <div className="App">
         <Header />
+        {/**http://customembed.ellipsis.aws.arc.pub.s3-website-us-east-1.amazonaws.com/searchApi.html */}
         <main role="main" className="App-body">
-          <IframeHost source="searchApi.html?wait=1" timeout={3000} />
+          <SearchPanel />
         </main>
       </div>
     )

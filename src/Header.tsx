@@ -1,4 +1,5 @@
 import React from 'react'
+import SettingsInput from './SettingsInput'
 
 export default function Header() {
   return (
@@ -15,26 +16,18 @@ export default function Header() {
                       <label htmlFor="firstName" className="text-white">
                         Search API Integration URL
                       </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="firstName"
-                        placeholder=""
-                        value=""
-                        required
+                      <SettingsInput
+                        storageKey="arc.custom_embed.searchApi"
+                        defaultValue="http://customembed.ellipsis.aws.arc.pub.s3-website-us-east-1.amazonaws.com/searchApi.html"
                       />
                     </div>
                     <div className="col-md-3 mb-3">
                       <label htmlFor="lastName" className="text-white">
                         Load Timeout Seconds
                       </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="lastName"
-                        placeholder=""
-                        value=""
-                        required
+                      <SettingsInput
+                        storageKey="arc.custom_embed.searchApiTimeout"
+                        defaultValue="2"
                       />
                     </div>
                   </div>
@@ -43,26 +36,18 @@ export default function Header() {
                       <label htmlFor="firstName" className="text-white">
                         View API Integration URL
                       </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="firstName"
-                        placeholder=""
-                        value=""
-                        required
+                      <SettingsInput
+                        storageKey="arc.custom_embed.viewApi"
+                        defaultValue="http://customembed.ellipsis.aws.arc.pub.s3-website-us-east-1.amazonaws.com/viewApi.html"
                       />
                     </div>
                     <div className="col-md-3 mb-3">
                       <label htmlFor="lastName" className="text-white">
                         Load Timeout Seconds
                       </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="lastName"
-                        placeholder=""
-                        value=""
-                        required
+                      <SettingsInput
+                        storageKey="arc.custom_embed.viewApiTimeout"
+                        defaultValue="2"
                       />
                     </div>
                   </div>
@@ -71,32 +56,34 @@ export default function Header() {
                       <label htmlFor="firstName" className="text-white">
                         Edit API Integration URL
                       </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="firstName"
-                        placeholder=""
-                        value=""
-                        required
+                      <SettingsInput
+                        storageKey="arc.custom_embed.editApi"
+                        defaultValue="http://customembed.ellipsis.aws.arc.pub.s3-website-us-east-1.amazonaws.com/editApi.html"
                       />
                     </div>
                     <div className="col-md-3 mb-3">
                       <label htmlFor="lastName" className="text-white">
                         Load Timeout Seconds
                       </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="lastName"
-                        placeholder=""
-                        value=""
-                        required
+                      <SettingsInput
+                        storageKey="arc.custom_embed.editApiTimeout"
+                        defaultValue="2"
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-9 mb-3">
+                      <label htmlFor="firstName" className="text-white">
+                        Host Load Timeout
+                      </label>
+                      <SettingsInput
+                        storageKey="arc.custom_embed.hostLoadTimeout"
+                        defaultValue="5"
                       />
                     </div>
                   </div>
                 </form>
               </div>
-              {/** */}
             </div>
           </div>
         </div>

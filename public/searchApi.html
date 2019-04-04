@@ -208,7 +208,7 @@
         // Emulate wait time
         setTimeout(function() {
           sendMessage('ready', {
-            qs: parseQueryString()
+            height: document.documentElement.scrollHeight
           })
         }, Number.parseInt(parameters.wait * 1000))
 
