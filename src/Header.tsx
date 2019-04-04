@@ -26,7 +26,63 @@ export default function Header() {
                     </div>
                     <div className="col-md-3 mb-3">
                       <label htmlFor="lastName" className="text-white">
-                        Load Timeout
+                        Load Timeout Seconds
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="lastName"
+                        placeholder=""
+                        value=""
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-9 mb-3">
+                      <label htmlFor="firstName" className="text-white">
+                        View API Integration URL
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="firstName"
+                        placeholder=""
+                        value=""
+                        required
+                      />
+                    </div>
+                    <div className="col-md-3 mb-3">
+                      <label htmlFor="lastName" className="text-white">
+                        Load Timeout Seconds
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="lastName"
+                        placeholder=""
+                        value=""
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-9 mb-3">
+                      <label htmlFor="firstName" className="text-white">
+                        Edit API Integration URL
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="firstName"
+                        placeholder=""
+                        value=""
+                        required
+                      />
+                    </div>
+                    <div className="col-md-3 mb-3">
+                      <label htmlFor="lastName" className="text-white">
+                        Load Timeout Seconds
                       </label>
                       <input
                         type="text"
