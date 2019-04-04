@@ -1,0 +1,121 @@
+---
+Metadata:
+    Stackjack:
+        CanonicalTemplate: v1/cfn/shared/static-site/static-site.template.yml
+
+Parameters:
+  RootDomainName:
+    Description: Root domain name for the website.
+    Type: String
+    Default: {{ site.domain }}
+  ZoneApex:
+    Description: Domain name to lookup Route53 Hosted Zone.
+    Type: String
+    Default: {{ site.zone_apex }}
+  SiteDomainName:
+    Description: FQDN of the website.
+    Type: String
+    Default: {% if site.subdomain is defined %}{{ site.subdomain }}.{% endif %}{{ site.domain }}
+  CertificateARN:
+    Type: String
+    Description: the Amazon Resource Name (ARN) of an AWS Certificate Manager (ACM) certificate.
+    Default: {{ site.certificate }}
+    AllowedPattern: "arn:aws:acm:.*"
+
+Resources:
+  # Common resources for all environments
+  OriginAccessIdentity:
+    Type: "AWS::CloudFront::CloudFrontOriginAccessIdentity"
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: This configuration blocks direct access to the S3 bucket so that all traffic goes through CloudFront
+
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref SiteDomainName
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: "index.html"
+        ErrorDocument: "404.html"
+      Tags:
+        - Key: Name
+          Value: !Ref SiteDomainName
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: SiteBucketPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal:
+              CanonicalUser: !GetAtt OriginAccessIdentity.S3CanonicalUserId
+            Action: 's3:GetObject'
+            Resource: !Join ['', [!GetAtt SiteBucket.Arn, '/*']]
+      Bucket: !Ref SiteBucket
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    DependsOn:
+      - SiteBucket
+      - OriginAccessIdentity
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: !GetAtt SiteBucket.DomainName
+            Id: S3Origin
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${OriginAccessIdentity}
+        Enabled: true
+        HttpVersion: 'http2'
+        DefaultRootObject: index.html
+        Aliases:
+          - !Ref SiteDomainName
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          TargetOriginId: S3Origin
+          ForwardedValues:
+            QueryString: true
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+        PriceClass: {{ site.price_class|default("PriceClass_All") }}
+        ViewerCertificate:
+          AcmCertificateArn: !Ref CertificateARN
+          SslSupportMethod: sni-only
+        {% if site.custom_error_responses is defined %}
+        CustomErrorResponses:
+        {% for error_response in site.custom_error_responses %}
+          - ErrorCachingMinTTL: {{ error_response.caching_min_ttl|default(300) }}
+            ErrorCode: {{ error_response.error_code }}
+            ResponseCode: {{ error_response.response_code }}
+            ResponsePagePath: "{{ error_response.page_path }}"
+        {% endfor %}
+        {% endif %}
+
+  CloudFrontDomainRecord:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: !Sub ${ZoneApex}.
+      Comment: Zone apex alias.
+      RecordSets:
+        - Name: !Ref SiteDomainName
+          Type: A
+          AliasTarget:
+            # Hard-coded per https://docs.aws.amazon.com/Route53/latest/APIReference/API_AliasTarget.html
+            HostedZoneId: Z2FDTNDATAQYW2
+            DNSName: !GetAtt CloudFrontDistribution.DomainName
+
+Outputs:
+
+    CloudFrontDistributionId:
+        Description: Cloudfront distribution id
+        Value: !Ref CloudFrontDistribution
+        Export:
+            Name: !Sub ${AWS::StackName}-cloudfront-distribution-id

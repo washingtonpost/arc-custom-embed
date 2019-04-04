@@ -1,0 +1,11 @@
+templates:
+  shared:
+    source: v1/cfn/shared
+    version: 1a61d8026fb21b105382c7dc24529c431434e8d3
+plugins:
+  static-site:
+    cfn/templates/static-site.yml: 1a61d8026fb21b105382c7dc24529c431434e8d3
+    deployspec.yml: 1a61d8026fb21b105382c7dc24529c431434e8d3
+    cfn/configs/customembed/us-east-1/config.yml: 1a61d8026fb21b105382c7dc24529c431434e8d3
+    cfn/configs/customembed/config.yml: 1a61d8026fb21b105382c7dc24529c431434e8d3
+    cfn/templates/pipeline.template.yml: 1a61d8026fb21b105382c7dc24529c431434e8d3

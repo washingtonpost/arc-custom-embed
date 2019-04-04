@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - npm install && npm run build
+      - echo Deployment started on `date`
+      - aws s3 sync build/ s3://customembed.ellipsis.aws.arc.pub --exclude index.html --cache-control max-age=31536000
+      - aws s3 cp build/index.html s3://customembed.ellipsis.aws.arc.pub/index.html --metadata-directive REPLACE --cache-control "max-age=60,s-maxage=31536000"
+  post_build:
+    commands:
+      - aws cloudfront create-invalidation --distribution-id `aws cloudformation list-exports --output text --query 'Exports[?Name==\`static-site-customembed-${ENVIRONMENT}-cloudfront-distribution-id\`]' | cut -d$'\t' -f3`  --paths "/*"
+      - echo Deployment completed on `date`

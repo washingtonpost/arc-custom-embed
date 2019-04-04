@@ -1,0 +1,19 @@
+template: cfn/templates/static-site.yml
+stack_name: static-site-customembed-prod
+region: us-east-1
+context:
+  name: customembed
+  environment: prod
+
+  site:
+    # Required, Root domain name for the website.)
+    domain: customembed.ellipsis.aws.arc.pub
+
+    # Required, Domain name to lookup Route53 Hosted Zone.  (can be equal to domain)
+    zone_apex: ellipsis.aws.arc.pub.
+
+    # Not required, Subdomain name of the website, usually includes environment name
+    #subdomain: prod
+
+    # Required, don't deploy static sites without https
+    certificate: arn:aws:acm:us-east-1:192577119545:certificate/e8ffe5a3-46f9-4720-9e92-c17af4d7342a
