@@ -185,9 +185,10 @@
         const template = document.getElementById('content_template').innerHTML
 
         for (i = 0; i < data.length; i++) {
+          data[i].image_id = Math.floor((i + 1) * (Math.random() * 21))
           const html = template
             .replace('%item_id%', 'row-' + data[i].id)
-            .replace('%image_id%', Math.floor((i + 1) * (Math.random() * 21)))
+            .replace('%image_id%', data[i].image_id)
             .replace('%text%', data[i].text)
           const element = document.createElement('div')
           document.getElementById('search_content').appendChild(element)
