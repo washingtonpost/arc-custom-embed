@@ -10,7 +10,7 @@ context:
     domain: customembed.ellipsis.aws.arc.pub
 
     # Required, Domain name to lookup Route53 Hosted Zone.  (can be equal to domain)
-    zone_apex: ellipsis.aws.arc.pub.
+    zone_apex: ellipsis.aws.arc.pub
 
     # Not required, Subdomain name of the website, usually includes environment name
     #subdomain: prod
