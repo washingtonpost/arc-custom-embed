@@ -8,7 +8,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <IframeHost source="searchApi.html?wait=0" timeout={3000} />
+          <IframeHost source="searchApi.html?wait=1" timeout={3000} />
         </header>
       </div>
     )

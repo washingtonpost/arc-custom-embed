@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <meta name="theme-color" content="#000020" />
+    <meta name="theme-color" content="#212529" />
     <title>Search API plugin</title>
     <link
       rel="stylesheet"
@@ -90,7 +90,7 @@
     </header>
 
     <main role="main">
-      <section class="jumbotron text-center">
+      <section class="jumbotron text-center my-0">
         <div class="container">
           <h1 class="jumbotron-heading text-dark">
             Search Reference Implementation
@@ -101,29 +101,15 @@
             have search logic, however, user might click on any tile below to
             emulate search result accepted.
           </p>
+          <p class="lead">
+            Click on any tile below to emulate selection has been accepted
+          </p>
         </div>
       </section>
 
       <div class="album py-5 bg-light">
         <div class="container">
-          <div class="row" id="search_content">
-            <!-- <div class="col-md-4">
-              <div class="card mb-4 box-shadow">
-                <img
-                  class="card-img-top"
-                  src="https://picsum.photos/200/100/?random"
-                  alt="Card image cap"
-                />
-                <div class="card-body">
-                  <p class="card-text text-muted">
-                    This is a wider card with supporting text below as a natural
-                    lead-in to additional content. This content is a little bit
-                    longer.
-                  </p>
-                </div>
-              </div>
-            </div> -->
-          </div>
+          <div class="row" id="search_content"></div>
         </div>
       </div>
     </main>
@@ -154,8 +140,15 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      const sendMessage = function(messageObject) {
-        window.parent.postMessage(JSON.stringify(messageObject), '*')
+      const sendMessage = function(subtype, data) {
+        window.parent.postMessage(
+          JSON.stringify({
+            type: 'custom_embed',
+            subtype,
+            data
+          }),
+          '*'
+        )
       }
 
       const parseQueryString = function() {
@@ -208,9 +201,7 @@
         }
       ]
       const handleClick = index => event => {
-        sendMessage({
-          data: data[index]
-        })
+        sendMessage('data', data[index])
       }
 
       const render = () => {
@@ -239,9 +230,8 @@
         )
         // Emulate wait time
         setTimeout(function() {
-          sendMessage({
-            qs: parseQueryString(),
-            type: 'ready'
+          sendMessage('ready', {
+            qs: parseQueryString()
           })
         }, Number.parseInt(parameters.wait * 1000))
 

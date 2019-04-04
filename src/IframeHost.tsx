@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 
 export interface IframeHostProps {
   source: string
@@ -11,6 +11,7 @@ export default function IframeHost(props: IframeHostProps) {
   const [loadTimeout, setLoadTimeout] = useState(false)
   const [showLoading, setShowLoading] = useState(true)
 
+  // Apply iframe height
   useEffect(() => {
     if (!iframeRef.current) {
       return
@@ -18,13 +19,34 @@ export default function IframeHost(props: IframeHostProps) {
     iframeRef.current.style.height = Math.max(height, 25) + 'px'
   }, [height])
 
+  // Sync iframe height with the content height
+  // First time called on load to adapt height to the rendered content
+  // Second time is called on ready event when iframe content rendered itself properly and add more items
+  const syncIframeHeight = useCallback(() => {
+    setHeight(
+      iframeRef.current && iframeRef.current.contentWindow
+        ? iframeRef.current.contentWindow.document.documentElement.scrollHeight
+        : height
+    )
+  }, [height])
+
   useEffect(() => {
     const messageHandler = (event: MessageEvent) => {
       console.log('HOST:', event)
-      const data = JSON.parse(event.data)
-      if (data.type === 'ready') {
+      let data
+      try {
+        data = JSON.parse(event.data)
+      } catch {
+        return
+      }
+      // Data should be an object and type should match custom_embed
+      if (!data || data.type !== 'custom_embed') {
+        return
+      }
+      if (data.subtype === 'ready') {
         setShowLoading(false)
         clearTimer()
+        syncIframeHeight()
       }
     }
     const iframeLoadTimeout = () => {
@@ -58,16 +80,9 @@ export default function IframeHost(props: IframeHostProps) {
         width={'100%'}
         ref={iframeRef}
         frameBorder="0"
-        scrolling="yes"
+        scrolling="no"
         src={props.source}
-        onLoad={(event: React.SyntheticEvent<HTMLIFrameElement>) => {
-          setHeight(
-            event.currentTarget.contentWindow
-              ? event.currentTarget.contentWindow.document.documentElement
-                  .scrollHeight
-              : 0
-          )
-        }}
+        onLoad={syncIframeHeight}
       />
     </div>
   )
