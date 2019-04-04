@@ -9,8 +9,6 @@ phases:
       - echo Deployment started on `date`
       - aws s3 sync build/ s3://customembed.ellipsis.aws.arc.pub --exclude index.html --cache-control max-age=31536000
       - aws s3 cp build/index.html s3://customembed.ellipsis.aws.arc.pub/index.html --metadata-directive REPLACE --cache-control "max-age=60,s-maxage=31536000"
-      # give public permissions to the S3 API files to access them in a different domain
-      - aws s3api put-object-acl --bucket customembed.ellipsis.aws.arc.pub --key searchApi.html --acl public-read
   post_build:
     commands:
       - DIST_ID=ETKFQ9SXRF4F9
