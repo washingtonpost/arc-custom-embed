@@ -11,7 +11,8 @@ phases:
       - aws s3 cp build/index.html s3://customembed.ellipsis.aws.arc.pub/index.html --metadata-directive REPLACE --cache-control "max-age=60,s-maxage=31536000"
   post_build:
     commands:
-      - DIST_ID=$(aws cloudformation list-exports --region us-east-1 --output text --query 'Exports[?Name==`static-site-customembed-${ENVIRONMENT}-cloudfront-distribution-id`]' | cut -d$'\t' -f3)
+      - DIST_ID=ETKFQ9SXRF4F9
+      # $(aws cloudformation list-exports --region us-east-1 --output text --query 'Exports[?Name==`static-site-customembed-${ENVIRONMENT}-cloudfront-distribution-id`]' | cut -d$'\t' -f3)
       - echo DIST_ID=$DIST_ID
       - aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/*"
       - echo Deployment completed on `date`
