@@ -1,18 +1,56 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import IframeHost from './IframeHost'
 
-export default function SearchPanel() {
+export interface SearchPanelProps {
+  setCustomEmbed: (customEmbed: Object) => void
+}
+
+export default function SearchPanel(props: SearchPanelProps) {
   const searchApi = localStorage.getItem('arc.custom_embed.searchApi')
   const searchApiTimeout = localStorage.getItem(
     'arc.custom_embed.searchApiTimeout'
   )
   const hostLoadTimeout: string =
     localStorage.getItem('arc.custom_embed.hostLoadTimeout') || '0'
+  useEffect(() => {
+    const messageHandler = (event: MessageEvent) => {
+      let messageData
+      try {
+        messageData = JSON.parse(event.data)
+      } catch {
+        return
+      }
+      // Data should be an object and type should match custom_embed
+      if (!messageData || messageData.type !== 'custom_embed') {
+        return
+      }
+      if (messageData.subtype === 'data') {
+        props.setCustomEmbed(messageData.data)
+      }
+    }
+    window.addEventListener('message', messageHandler)
+
+    return function cleanup() {
+      window.removeEventListener('message', messageHandler)
+    }
+  }, [props.setCustomEmbed])
 
   return (
-    <IframeHost
-      source={`${searchApi}?wait=${searchApiTimeout}`}
-      timeout={Number.parseInt(hostLoadTimeout) * 1000}
-    />
+    <React.Fragment>
+      <div className="jumbotron bg-light" style={{ maxWidth: '60vw' }}>
+        <p className="text-muted">
+          A Search integration window should be loaded below. Please follow
+          search integration instructions to select a media. After media being
+          selected you will be forwarded to the view integration screen.
+        </p>
+        <p className="text-dark">
+          If you get integration load timeout, please check settings.
+        </p>
+      </div>
+      <IframeHost
+        source={`${searchApi}?wait=${searchApiTimeout}`}
+        timeout={Number.parseInt(hostLoadTimeout) * 1000}
+      />
+    </React.Fragment>
   )
 }
