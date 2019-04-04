@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react'
 import IframeHost from './IframeHost'
 
-export interface SearchPanelProps {
+export interface ViewPanelProps {
   setEditMode: (isEditing: boolean) => void
   clearSelected: () => void
   customEmbed: Object
 }
 
-export default function ViewPanel(props: SearchPanelProps) {
-  const editApi = localStorage.getItem('arc.custom_embed.viewApi')
-  const editApiTimeout = localStorage.getItem('arc.custom_embed.viewApiTimeout')
+export default function ViewPanel(props: ViewPanelProps) {
+  const viewApi = localStorage.getItem('arc.custom_embed.viewApi')
+  const viewApiTimeout = localStorage.getItem('arc.custom_embed.viewApiTimeout')
   const hostLoadTimeout: string =
     localStorage.getItem('arc.custom_embed.hostLoadTimeout') || '0'
 
@@ -42,7 +42,7 @@ export default function ViewPanel(props: SearchPanelProps) {
         </p>
       </div>
       <IframeHost
-        source={`${editApi}?wait=${editApiTimeout}&p=${customEmbedEncoded}`}
+        source={`${viewApi}?wait=${viewApiTimeout}&p=${customEmbedEncoded}`}
         timeout={Number.parseInt(hostLoadTimeout) * 1000}
       />
     </React.Fragment>
