@@ -18,7 +18,7 @@ export default function Header() {
                       </label>
                       <SettingsInput
                         storageKey="arc.custom_embed.searchApi"
-                        defaultValue="http://customembed.ellipsis.aws.arc.pub.s3-website-us-east-1.amazonaws.com/searchApi.html"
+                        defaultValue="https://d2o92lg4k51qh.cloudfront.net/searchApi.html"
                       />
                     </div>
                     <div className="col-md-3 mb-3">
@@ -38,7 +38,7 @@ export default function Header() {
                       </label>
                       <SettingsInput
                         storageKey="arc.custom_embed.viewApi"
-                        defaultValue="http://customembed.ellipsis.aws.arc.pub.s3-website-us-east-1.amazonaws.com/viewApi.html"
+                        defaultValue="https://d2o92lg4k51qh.cloudfront.net/viewApi.html"
                       />
                     </div>
                     <div className="col-md-3 mb-3">
@@ -58,7 +58,7 @@ export default function Header() {
                       </label>
                       <SettingsInput
                         storageKey="arc.custom_embed.editApi"
-                        defaultValue="http://customembed.ellipsis.aws.arc.pub.s3-website-us-east-1.amazonaws.com/editApi.html"
+                        defaultValue="https://d2o92lg4k51qh.cloudfront.net/editApi.html"
                       />
                     </div>
                     <div className="col-md-3 mb-3">
