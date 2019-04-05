@@ -3,8 +3,27 @@ import IframeHost from './IframeHost'
 
 export interface EditPanelProps {
   setEditMode: (isEditing: boolean) => void
-  setCustomEmbed: (customEmbed: Object) => void
+  setCustomEmbed: (customEmbed: Object | null) => void
   customEmbed: Object
+}
+
+const forbiddenKeys = new Set(['type', 'version', 'referent'])
+const dataIsValid = (object: any): boolean => {
+  const keys = Object.keys(object)
+  const hasKey = keys.reduce(
+    (result, key) => result || forbiddenKeys.has(key),
+    false
+  )
+  if (hasKey) {
+    return false
+  }
+  return keys
+    .filter(
+      key => Object.prototype.toString.call(object[key]) === '[object Object]'
+    )
+    .reduce<boolean>((result, key) => {
+      return result && dataIsValid(object[key])
+    }, true)
 }
 
 export default function EditPanel(props: EditPanelProps) {
@@ -16,6 +35,39 @@ export default function EditPanel(props: EditPanelProps) {
   const customEmbedEncoded = encodeURIComponent(
     JSON.stringify(props.customEmbed)
   )
+
+  useEffect(() => {
+    const messageHandler = (event: MessageEvent) => {
+      let messageData
+      try {
+        messageData = JSON.parse(event.data)
+      } catch {
+        return
+      }
+      // Data should be an object and type should match custom_embed
+      if (!messageData || messageData.type !== 'custom_embed') {
+        return
+      }
+      if (messageData.subtype === 'data') {
+        if (!dataIsValid(messageData.data)) {
+          alert(
+            'Custom embed should not contain type, version or referent fields'
+          )
+        } else {
+          props.setCustomEmbed(messageData.data)
+          props.setEditMode(false)
+        }
+      }
+      if (messageData.subtype === 'cancel') {
+        props.setEditMode(false)
+      }
+    }
+    window.addEventListener('message', messageHandler)
+
+    return function cleanup() {
+      window.removeEventListener('message', messageHandler)
+    }
+  }, [props.setCustomEmbed])
 
   return (
     <React.Fragment>

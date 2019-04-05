@@ -49,7 +49,7 @@ export default function SearchPanel(props: SearchPanelProps) {
       </div>
       <IframeHost
         source={`${searchApi}?wait=${searchApiTimeout}`}
-        timeout={Number.parseInt(hostLoadTimeout) * 1000}
+        timeout={Number.parseInt(hostLoadTimeout)}
       />
     </React.Fragment>
   )

@@ -12,31 +12,45 @@
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     />
+    <style>
+      #editor {
+        position: relative;
+        height: 600px;
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
-    <template id="content_template">
-      <div class="col-md-12" id="%item_id%">
-        <div class="card mb-4 box-shadow">
-          <img
-            class="card-img-top"
-            src="https://picsum.photos/800/600/?image=%image_id%"
-            alt="Card image cap"
-          />
-          <div class="card-body">
-            <p class="card-text text-muted">
-              %text%
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-12">
-        <pre>%data%</pre>
-      </div>
-    </template>
     <main role="main">
       <div class="album py-5 bg-light">
         <div class="container">
-          <div class="row" id="search_content"></div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card mb-4 box-shadow">
+                <img
+                  class="card-img-top"
+                  id="edit_image"
+                  data-src="https://picsum.photos/200/100/?image=%image_id%"
+                  alt="Card image cap"
+                />
+                <div class="card-body">
+                  <p class="card-text text-muted" id="edit_text"></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 p-3">
+              <button type="button" class="btn btn-primary" id="btn_apply">
+                Apply Changes
+              </button>
+              <button type="button" class="btn btn-light mx-1" id="btn_cancel">
+                Close Editor
+              </button>
+            </div>
+            <div class="col-md-12">
+              <div id="editor"></div>
+              <!-- <textarea rows="20" id="edit_raw" style="width:100%"></textarea> -->
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -54,6 +68,11 @@
       src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"
+    ></script>
+    <script
+      src="//ajaxorg.github.io/ace-builds/src-min-noconflict/ace.js"
+      type="text/javascript"
+      charset="utf-8"
     ></script>
     <script>
       const sendMessage = function(subtype, data) {
@@ -78,16 +97,33 @@
         }, {})
       }
 
-      const render = data => {
-        const template = document.getElementById('content_template').innerHTML
-        const html = template
-          .replace('%item_id%', 'row-' + data.id)
-          .replace('%image_id%', data.image_id)
-          .replace('%text%', data.text)
-          .replace('%data%', JSON.stringify(data, null, 2))
-        const element = document.createElement('div')
-        document.getElementById('search_content').appendChild(element)
-        element.outerHTML = html
+      let editor
+      const dataHolder = {}
+
+      const render = (data, updateEditor = true) => {
+        dataHolder.data = data
+        const image = document.getElementById('edit_image')
+        image.src = image.dataset.src.replace('%image_id%', data.image_id)
+        document.getElementById('edit_text').innerText = JSON.stringify(
+          data.text
+        )
+        updateEditor && editor.setValue(JSON.stringify(data, null, 2), -1)
+      }
+
+      const renderChanges = () => {
+        try {
+          render(JSON.parse(editor.getValue()), false)
+          document.getElementById('btn_apply').removeAttribute('disabled')
+        } catch {
+          document.getElementById('btn_apply').setAttribute('disabled', true)
+        }
+      }
+
+      const applyChanges = () => {
+        sendMessage('data', dataHolder.data)
+      }
+      const dismissEditor = () => {
+        sendMessage('cancel')
       }
 
       window.onload = function() {
@@ -102,9 +138,24 @@
           sendMessage('ready', {
             height: document.documentElement.scrollHeight
           })
-        }, Number.parseInt(parameters.wait * 1000))
+        }, Number.parseInt(parameters.wait))
+
+        editor = ace.edit('editor')
+        editor.getSession().setUseWorker(false)
+        editor.setTheme('ace/theme/chrome')
+        editor.getSession().setMode('ace/mode/json')
+        editor.setOptions({
+          autoScrollEditorIntoView: true,
+          copyWithEmptySelection: true
+        })
+        editor.session.setUseWrapMode(true)
+        editor.session.on('change', function(delta) {
+          renderChanges()
+        })
 
         render(JSON.parse(decodeURIComponent(parameters.p)))
+        document.getElementById('btn_apply').onclick = applyChanges
+        document.getElementById('btn_cancel').onclick = dismissEditor
       }
     </script>
   </body>

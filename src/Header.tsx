@@ -23,11 +23,11 @@ export default function Header() {
                     </div>
                     <div className="col-md-3 mb-3">
                       <label htmlFor="lastName" className="text-white">
-                        Load Timeout Seconds
+                        Load Timeout Msec
                       </label>
                       <SettingsInput
                         storageKey="arc.custom_embed.searchApiTimeout"
-                        defaultValue="2"
+                        defaultValue="500"
                       />
                     </div>
                   </div>
@@ -43,11 +43,11 @@ export default function Header() {
                     </div>
                     <div className="col-md-3 mb-3">
                       <label htmlFor="lastName" className="text-white">
-                        Load Timeout Seconds
+                        Load Timeout Msec
                       </label>
                       <SettingsInput
                         storageKey="arc.custom_embed.viewApiTimeout"
-                        defaultValue="2"
+                        defaultValue="500"
                       />
                     </div>
                   </div>
@@ -63,22 +63,22 @@ export default function Header() {
                     </div>
                     <div className="col-md-3 mb-3">
                       <label htmlFor="lastName" className="text-white">
-                        Load Timeout Seconds
+                        Load Timeout Msec
                       </label>
                       <SettingsInput
                         storageKey="arc.custom_embed.editApiTimeout"
-                        defaultValue="2"
+                        defaultValue="500"
                       />
                     </div>
                   </div>
                   <div className="row">
                     <div className="col-md-9 mb-3">
                       <label htmlFor="firstName" className="text-white">
-                        Host Load Timeout
+                        Host Load Timeout Msec
                       </label>
                       <SettingsInput
                         storageKey="arc.custom_embed.hostLoadTimeout"
-                        defaultValue="5"
+                        defaultValue="6000"
                       />
                     </div>
                   </div>
