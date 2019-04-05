@@ -43,7 +43,7 @@ export default function ViewPanel(props: ViewPanelProps) {
       </div>
       <IframeHost
         source={`${viewApi}?wait=${viewApiTimeout}&p=${customEmbedEncoded}`}
-        timeout={Number.parseInt(hostLoadTimeout) * 1000}
+        timeout={Number.parseInt(hostLoadTimeout)}
       />
     </React.Fragment>
   )

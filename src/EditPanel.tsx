@@ -84,7 +84,7 @@ export default function EditPanel(props: EditPanelProps) {
       </div>
       <IframeHost
         source={`${editApi}?wait=${editApiTimeout}&p=${customEmbedEncoded}`}
-        timeout={Number.parseInt(hostLoadTimeout) * 1000}
+        timeout={Number.parseInt(hostLoadTimeout)}
       />
     </React.Fragment>
   )
