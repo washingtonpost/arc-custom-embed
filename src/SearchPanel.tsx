@@ -20,11 +20,11 @@ export default function SearchPanel(props: SearchPanelProps) {
       } catch {
         return
       }
-      // Data should be an object and type should match custom_embed
-      if (!messageData || messageData.type !== 'custom_embed') {
+      // Data should be an object and source should match custom_embed
+      if (!messageData || messageData.source !== 'custom_embed') {
         return
       }
-      if (messageData.subtype === 'data') {
+      if (messageData.action === 'data') {
         props.setCustomEmbed(messageData.data)
       }
     }

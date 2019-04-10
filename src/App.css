@@ -30,3 +30,11 @@
   padding: 40px 20vw;
   background-color: rgba(35, 35, 35, 0.95);
 }
+.App-divider {
+  width: 98%;
+  background: #f5f5c2;
+  color: black;
+  padding: 1em;
+  margin: 1em;
+  border: 2px solid yellow;
+}

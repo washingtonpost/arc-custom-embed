@@ -28,11 +28,11 @@ export default function IframeHost(props: IframeHostProps) {
       } catch {
         return
       }
-      // Data should be an object and type should match custom_embed
-      if (!messageData || messageData.type !== 'custom_embed') {
+      // Data should be an object and source should match custom_embed
+      if (!messageData || messageData.source !== 'custom_embed') {
         return
       }
-      if (messageData.subtype === 'ready') {
+      if (messageData.action === 'ready') {
         setShowLoading(false)
         clearTimer()
         if (messageData.data && messageData.data.height) {
@@ -58,22 +58,29 @@ export default function IframeHost(props: IframeHostProps) {
     }
   }, [props.source, props.timeout])
 
-  return loadTimeout ? (
-    <div className="iframe-load-error">Integration Load Timeout</div>
-  ) : (
-    <div className="iframe-container">
-      {showLoading ? (
-        <div className="iframe-loading">
-          <span>Loading...</span>
+  return (
+    <React.Fragment>
+      <div className="App-divider">
+        The content below is a custom embed plugin page in a IFrame
+      </div>
+      {loadTimeout ? (
+        <div className="iframe-load-error">Integration Load Timeout</div>
+      ) : (
+        <div className="iframe-container">
+          {showLoading ? (
+            <div className="iframe-loading">
+              <span>Loading...</span>
+            </div>
+          ) : null}
+          <iframe
+            width={'100%'}
+            ref={iframeRef}
+            frameBorder="0"
+            scrolling="no"
+            src={props.source}
+          />
         </div>
-      ) : null}
-      <iframe
-        width={'100%'}
-        ref={iframeRef}
-        frameBorder="0"
-        scrolling="no"
-        src={props.source}
-      />
-    </div>
+      )}
+    </React.Fragment>
   )
 }

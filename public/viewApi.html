@@ -56,11 +56,11 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      const sendMessage = function(subtype, data) {
+      const sendMessage = function(action, data) {
         window.parent.postMessage(
           JSON.stringify({
-            type: 'custom_embed',
-            subtype,
+            source: 'custom_embed',
+            action,
             data
           }),
           '*'
@@ -82,8 +82,8 @@
         const template = document.getElementById('content_template').innerHTML
         const html = template
           .replace('%item_id%', 'row-' + data.id)
-          .replace('%image_id%', data.image_id)
-          .replace('%text%', data.text)
+          .replace('%image_id%', data.config.image_id)
+          .replace('%text%', data.config.text)
           .replace('%data%', JSON.stringify(data, null, 2))
         const element = document.createElement('div')
         document.getElementById('search_content').appendChild(element)

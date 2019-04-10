@@ -75,11 +75,11 @@
       charset="utf-8"
     ></script>
     <script>
-      const sendMessage = function(subtype, data) {
+      const sendMessage = function(action, data) {
         window.parent.postMessage(
           JSON.stringify({
-            type: 'custom_embed',
-            subtype,
+            source: 'custom_embed',
+            action,
             data
           }),
           '*'
@@ -103,9 +103,12 @@
       const render = (data, updateEditor = true) => {
         dataHolder.data = data
         const image = document.getElementById('edit_image')
-        image.src = image.dataset.src.replace('%image_id%', data.image_id)
+        image.src = image.dataset.src.replace(
+          '%image_id%',
+          data.config.image_id
+        )
         document.getElementById('edit_text').innerText = JSON.stringify(
-          data.text
+          data.config.text
         )
         updateEditor && editor.setValue(JSON.stringify(data, null, 2), -1)
       }
