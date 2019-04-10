@@ -27,6 +27,11 @@ export default function SearchPanel(props: SearchPanelProps) {
       if (messageData.action === 'data') {
         props.setCustomEmbed(messageData.data)
       }
+      if (messageData.action === 'cancel') {
+        // Host application should close modal window.
+        // Since search view is the only default view, just log it here
+        console.log('Cancel message received')
+      }
     }
     window.addEventListener('message', messageHandler)
 
