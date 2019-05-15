@@ -35,8 +35,8 @@
       </div>
     </template>
     <main role="main">
-      <div class="album py-5 bg-light">
-        <div class="container">
+      <div class="album bg-light">
+        <div class="container-fluid">
           <div class="row" id="search_content"></div>
         </div>
       </div>
@@ -103,7 +103,7 @@
         // Emulate wait time
         setTimeout(function() {
           sendMessage('ready', {
-            height: document.documentElement.scrollHeight + 45
+            height: document.documentElement.scrollHeight
           })
         }, Number.parseInt(parameters.wait))
 
