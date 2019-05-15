@@ -19,6 +19,7 @@
         <div class="card mb-4 box-shadow">
           <img
             class="card-img-top"
+            style="min-height: 600px;"
             src="https://picsum.photos/800/600/?image=%image_id%"
             alt="Card image cap"
           />
@@ -97,14 +98,15 @@
           },
           parseQueryString()
         )
+        render(JSON.parse(decodeURIComponent(parameters.p)))
+
         // Emulate wait time
         setTimeout(function() {
           sendMessage('ready', {
-            height: document.documentElement.scrollHeight
+            height: document.documentElement.scrollHeight + 45
           })
         }, Number.parseInt(parameters.wait))
 
-        render(JSON.parse(decodeURIComponent(parameters.p)))
       }
     </script>
   </body>
