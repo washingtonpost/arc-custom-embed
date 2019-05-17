@@ -50,6 +50,8 @@ View integration is expected to send only handshake message. View integration re
 
 Edit integration receives configuration in a form of a query string. (base64/encoded, tbd). Edit integration is expected to send handshake message and the configuration JSON on changes submit. If user discard changes, a cancel message should be send. Configuration JSON is a subject of validation, see below.
 
+Each integration should be supplied with a `k` query string argument. This key is suppose to be used as simple cookie value and returned back with any message in the `key` field. This helps Ellipsis to identify which integration responds.
+
 # Validation
 
 Custom Embed configuration has the following limitations:
@@ -64,19 +66,20 @@ Ellipsis communicate with plugins though query string data. This data is arbitra
 
 Example:
 
-    editApi.html?p=%7B%22id%22%3A%2217b3224337d2d3%22%2C%22url%22%3A%22https%3A%2F%2Fmy.content.com%2Fdata%2F5%22%2C%22config%22%3A%7B%22id%22%3A5%2C%22text%22%3A%22Brunch%20raclette%20vexillologist%20post-ironic%20glossier%20ennui%20XOXO%20mlkshk%20godard%20pour-over%20blog%20tumblr%20humblebrag.%22%2C%22image_id%22%3A30%7D%7D
+    editApi.html?k=j0a&p=%7B%22id%22%3A%2217b3224337d2d3%22%2C%22url%22%3A%22https%3A%2F%2Fmy.content.com%2Fdata%2F5%22%2C%22config%22%3A%7B%22id%22%3A5%2C%22text%22%3A%22Brunch%20raclette%20vexillologist%20post-ironic%20glossier%20ennui%20XOXO%20mlkshk%20godard%20pour-over%20blog%20tumblr%20humblebrag.%22%2C%22image_id%22%3A30%7D%7D
 
 Plugins should response back through browser postMessage mechanism. Each message should be a JSON object and contain the following fields:
 
 - source - always equal to custom_embed
 - action - can be ready, data, cancel
+- key - a value from `k` query string parameter. Should be passed as-is
 - data - contain custom embed data or content height of the iframe
 
 Ready message
 
 Ready message should be send by a plugins as soon as it renders their content and content height is known.
 
-    {"source":"custom_embed","action":"ready","data":{"height":908}}
+    {"source":"custom_embed","action":"ready","key":"j0a","data":{"height":908}}
 
 If ready message will not be sent within ~10 seconds, Ellipsis will render a timeout error and plugin content will be discarded.
 
@@ -87,6 +90,7 @@ Data message should be send by search plugin when an item has been selected by u
     {
       "source":"custom_embed",
       "action":"data",
+      "key":"j0a",
       "data":{
         "id":"b0bc95dc11919",
         "url":"https://my.content.com/data/2",
@@ -104,7 +108,7 @@ Cancel message
 
 Cancel message is used to notify Ellipsis that user wants to cancel search or discard any editing changes.
 
-    {"source":"custom_embed","action":"cancel"}
+    {"source":"custom_embed","action":"cancel","key":"j0a"}
 
 Cancel message notify Ellipsis to close the UI. It does nothing for the view integration and should not be used there.
 
@@ -116,16 +120,16 @@ Message communication example
 | ---------------------------------- | --------------------------------------------------------------------------------------------- |
 | Ellipsis load a Search Integration |                                                                                               |
 |                                    | Integration loads and send back Ready message                                                 |
-|                                    | ← {"source":"custom_embed","action":"ready","data":{"height":908}}                            |
+|                                    | ← {"source":"custom_embed","action":"ready","key":"j0a","data":{"height":908}}                            |
 |                                    | User select necessary media                                                                   |
-|                                    | ← {"source":"custom_embed","action":"data","data":{…}}                                        |
+|                                    | ← {"source":"custom_embed","action":"data","key":"j0a","data":{…}}                                        |
 | Ellipsis load View Integration     |                                                                                               |
 | viewApi.html?p=….                  | View integration renders it’s content and send back ready<br>message with the content height. |
-|                                    | ← {"source":"custom_embed","action":"ready","data":{"height":480}}                            |
+|                                    | ← {"source":"custom_embed","action":"ready","key":"j0a","data":{"height":480}}                            |
 | Ellipsis load Edit Integration     |                                                                                               |
 | editApi.html?p=….                  | Edit integration renders it’s content and send back ready<br>message with the content height. |
-|                                    | ← {"source":"custom_embed","action":"ready","data":{"height":890}}                            |
+|                                    | ← {"source":"custom_embed","action":"ready","key":"j0a","data":{"height":890}}                            |
 |                                    | User accepted changes                                                                         |
-|                                    | ← {"source":"custom_embed","action":"data","data":{…}}                                        |
+|                                    | ← {"source":"custom_embed","action":"data","key":"j0a","data":{…}}                                        |
 |                                    | /or/ User cancelled changes                                                                   |
-|                                    | ← {"source":"custom_embed","action":"cancel"}                                                 |
+|                                    | ← {"source":"custom_embed","action":"cancel","key":"j0a"}                                                 |
