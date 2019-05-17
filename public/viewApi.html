@@ -57,12 +57,13 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      const sendMessage = function(action, data) {
+      const sendMessage = function(action, data, key) {
         window.parent.postMessage(
           JSON.stringify({
             source: 'custom_embed',
             action,
-            data
+            data,
+            key: parseQueryString()['k']
           }),
           '*'
         )
@@ -105,7 +106,7 @@
           sendMessage('ready', {
             height: document.documentElement.scrollHeight
           })
-        }, Number.parseInt(parameters.wait))
+        }, Number.parseInt(parameters.wait) + 10)
 
       }
     </script>

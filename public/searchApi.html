@@ -122,7 +122,8 @@
           JSON.stringify({
             source: 'custom_embed',
             action,
-            data
+            data,
+            key: parseQueryString()['k']
           }),
           '*'
         )

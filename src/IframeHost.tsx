@@ -10,6 +10,11 @@ export default function IframeHost(props: IframeHostProps) {
   const [height, setHeight] = useState(400)
   const [loadTimeout, setLoadTimeout] = useState(false)
   const [showLoading, setShowLoading] = useState(true)
+  const [key] = useState(Date.now().toString(36))
+
+  const fullUrl = props.source.indexOf('?') === -1 ?
+    `${props.source}?k=${key}` :
+    `${props.source}&k=${key}`
 
   // Apply iframe height
   useEffect(() => {
@@ -28,6 +33,11 @@ export default function IframeHost(props: IframeHostProps) {
       } catch {
         return
       }
+      if (messageData && messageData.key !== key) {
+        console.error('invalid key', messageData.key)
+        return
+      }
+
       // Data should be an object and source should match custom_embed
       if (!messageData || messageData.source !== 'custom_embed') {
         return
@@ -77,7 +87,7 @@ export default function IframeHost(props: IframeHostProps) {
             ref={iframeRef}
             frameBorder="0"
             scrolling="no"
-            src={props.source}
+            src={fullUrl}
           />
         </div>
       )}
