@@ -14,6 +14,20 @@
     />
     <link href="css/all.min.css" rel="stylesheet" />
     <style>
+      .form-control-borderless {
+        border: none;
+      }
+
+      .form-control-borderless:hover,
+      .form-control-borderless:active,
+      .form-control-borderless:focus {
+        border: none;
+        outline: none;
+        box-shadow: none;
+      }
+      .list-group-ite-m {
+        border: none;
+      }
       .amplitude-paused:before {
         content: "\f04b";
       }
@@ -72,7 +86,7 @@
       </a>
     </template>
     <main role="main">
-      <div class="container">
+      <div class="container-fluid">
         <div class="row my-5">
           <div class="col-4">
             <form>
@@ -332,7 +346,7 @@
           sendMessage('ready', {
             height: document.documentElement.scrollHeight
           })
-        }, Number.parseInt(parameters.wait))
+        }, Number.parseInt(parameters.wait) + 100)
 
         render()
 
