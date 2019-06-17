@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#212529" />
+    <title>Audio Search API plugin</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link href="css/all.min.css" rel="stylesheet" />
+    <style>
+      .amplitude-paused:before {
+        content: "\f04b";
+      }
+      .amplitude-playing:before {
+        content: "\f04c";
+      }
+      .list-group-item-action:hover:not(.active),
+      .list-group-item-action:visited:not(.active) {
+        color: #495057;
+        background-color: white;        
+      }
+      .active-animate {
+        animation: flash-animation 250ms infinite;
+      }
+
+      @keyframes flash-animation {
+        0%, 49% {
+          background-color: white;
+          border-color: white;
+        }
+        50%, 100% {
+          background-color: #a3c4ff;
+          border-color: #b3d4ff;
+        }
+      }      
+    </style>
+  </head>
+  <body>
+    <template id="content_template">
+        <a
+        data-index="{{index}}"
+        href="#"
+        class="mt-3 list-group-item list-group-item-action"
+      >
+        <div class="row">
+          <div class="col-3">
+            <img src="audio/{{_meta.cover}}" class="img-thumbnail" />
+          </div>
+          <div class="col-9">
+            <div class="d-flex w-100 justify-content-between">
+              <h4>{{_meta.title}}</h4>
+              <small>
+                Date:&nbsp;{{_meta.date}}
+              </small>
+            </div>
+            <p>{{name}}</p>
+            <span>
+                <i
+                  class="fas amplitude-play-pause"
+                  data-amplitude-song-index="{{index}}"
+                  style="width: 1.2em;"></i>
+                <small class="text-muted w-50">length: <span class="amplitude-time-remaining" data-amplitude-song-index="{{index}}"></span></small>
+            </span>
+          </div>
+        </div>
+      </a>
+    </template>
+    <main role="main">
+      <div class="container">
+        <div class="row my-5">
+          <div class="col-4">
+            <form>
+              <div class="form-group">
+                <label for="releaseDaste" class="col-form-label-sm"
+                  >Release Date</label
+                >
+                <div class="input-group input-group-sm">
+                  <input
+                    type="date"
+                    class="form-control form-control-sm"
+                    id="releaseDaste"
+                  />
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <i class="far fa-calendar-alt"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1" class="col-form-label-sm"
+                  >Audio Program</label
+                >
+                <select
+                  class="form-control form-control-sm"
+                  id="exampleFormControlSelect1"
+                >
+                  <option>All</option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+              </div>
+              <div class="form-check mt-5">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  checked
+                  value=""
+                  id="defaultCheck1"
+                />
+                <label class="form-check-label" for="defaultCheck1">
+                  published
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  checked
+                  value=""
+                  id="defaultCheck4"
+                />
+                <label class="form-check-label" for="defaultCheck4">
+                  not published
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  checked
+                  value=""
+                  id="defaultCheck2"
+                />
+                <label class="form-check-label" for="defaultCheck2">
+                  ads enabled
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  checked
+                  value=""
+                  id="defaultCheck3"
+                />
+                <label class="form-check-label" for="defaultCheck3">
+                  ads disabled
+                </label>
+              </div>
+            </form>
+          </div>
+          <div class="col-8">
+            <div class="row my-4 justify-content-left">
+              <div class="col-12 col-md-12 col-lg-12">
+                <form class="card card-sm">
+                  <div class="card-body row no-gutters align-items-center p-2">
+                    <div class="col-auto">
+                      <i class="fas fa-search text-body"></i>
+                    </div>
+                    <!--end of col-->
+                    <div class="col">
+                      <input
+                        class="form-control form-control-sm form-control-borderless"
+                        type="search"
+                        placeholder="Search for audio"
+                      />
+                    </div>
+                    <!--end of col-->
+                    <div class="col-auto">
+                      <button class="btn btn-sm btn-success" type="submit">
+                        Search
+                      </button>
+                    </div>
+                    <!--end of col-->
+                  </div>
+                </form>
+              </div>
+              <!--end of col-->
+            </div>
+            <div class="mt-3">
+              <div class="bs-example">
+                <div class="list-group list-group-flush" id="search_content" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/amplitudejs@4.1.0/dist/amplitude.js"></script>
+    <script>
+      const sendMessage = function(action, data) {
+        window.parent.postMessage(
+          JSON.stringify({
+            source: 'custom_embed',
+            action,
+            data,
+            key: parseQueryString()['k']
+          }),
+          '*'
+        )
+      }
+
+      const parseQueryString = function() {
+        const params = location.search.split('?')[1] || ''
+        const kv = params.split('&')
+        return kv.reduce((result, item) => {
+          const [key, value] = item.split('=')
+          return Object.assign(result, {
+            [key]: value
+          })
+        }, {})
+      }
+
+      const songs = [
+        {
+          _meta: {
+            title: 'Post Reports',
+            date: '06/07/19',
+            cover: 'cover0.png'
+          },
+          name: 'A T. rex exhibit 66 million years in the making',
+          url: 'audio/audio0.mp3'
+        },
+        {
+          _meta: {
+            title: 'Cape Up with Jonathan Capehart',
+            date: '12/04/18',
+            cover: 'cover1.jpg'
+          },
+          name: 'How Derek Black went from being the golden boy of white nationalism to its outspoken critic',
+          url: 'audio/audio1.mp3'
+        },
+        {
+          _meta: {
+            title: 'The Daily 202\'s Big Idea',
+            date: '06/07/2019',
+            cover: 'cover2.jpg'
+          },
+          name: 'Walmart robots make human workers feel like machines',
+          url: 'audio/audio2.mp3'
+        },
+        {
+          _meta: {
+            title: 'Retropod',
+            date: '06/07/2019',
+            cover: 'cover3.jpg'
+          },
+          name: 'The painter who became the CIA’s master of disguise',
+          url: 'audio/audio3.mp3'
+        },
+      ]
+
+      const handleClick = event => {
+        event.preventDefault();
+        if (event.target.classList.contains('amplitude-play-pause')) {
+          return
+        }
+        const listGroupItem = event.target.closest('a')
+        const index = Number(listGroupItem.dataset.index)
+        if (Number.isNaN(index)) {
+          return
+        }
+        listGroupItem.classList.add('active-animate')
+        listGroupItem.classList.add('active')
+        
+        setTimeout(() => {
+          sendMessage('data', {
+            id: index,
+            url: songs[index].url,
+            config: songs[index]
+          })
+        }, 800)
+      }
+      const get = (data, path) => path.split('.').reduce((r, k) => r ? r[k] : null, data)
+      const render = () => {
+        const template = document.getElementById('content_template').innerHTML
+
+        var rx = /{{([^}]*)}}/g
+        for (i = 0; i < songs.length; i++) {
+          let match
+          let html = template
+          while (match = rx.exec(template)) {
+            const path = match[1]
+            const value = get({...songs[i], index: i}, path)
+            html = html.replace(new RegExp(match[0], 'g'), value)
+          }
+          const element = document.createElement('div')
+          document.getElementById('search_content').appendChild(element)
+          element.outerHTML = html
+        }
+        document
+            .getElementById('search_content')
+            .addEventListener('click', handleClick)
+      }
+
+      window.onload = function() {
+
+        const parameters = Object.assign(
+          {
+            wait: 0
+          },
+          parseQueryString()
+        )
+        // Emulate wait time
+        setTimeout(function() {
+          sendMessage('ready', {
+            height: document.documentElement.scrollHeight
+          })
+        }, Number.parseInt(parameters.wait))
+
+        render()
+
+        Amplitude.init({ songs, preload: 'auto' })
+      }
+    </script>
+  </body>
+</html>
