@@ -305,7 +305,7 @@
         
         setTimeout(() => {
           sendMessage('data', {
-            id: index,
+            id: `aud-${index}`,
             url: songs[index].url,
             config: songs[index]
           })
