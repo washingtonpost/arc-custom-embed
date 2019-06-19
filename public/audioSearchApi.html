@@ -64,13 +64,13 @@
       >
         <div class="row">
           <div class="col-3">
-            <img src="audio/{{_meta.cover}}" class="img-thumbnail" />
+            <img src="{{cover_art_url}}" class="img-thumbnail" />
           </div>
           <div class="col-9">
             <div class="d-flex w-100 justify-content-between">
-              <h4>{{_meta.title}}</h4>
+              <h4>{{album}}</h4>
               <small>
-                Date:&nbsp;{{_meta.date}}
+                Date:&nbsp;{{date}}
               </small>
             </div>
             <p>{{name}}</p>
@@ -252,42 +252,42 @@
       }
 
       const songs = [
-        {
-          _meta: {
-            title: 'Post Reports',
-            date: '06/07/19',
-            cover: 'cover0.png'
-          },
+				{
           name: 'A T. rex exhibit 66 million years in the making',
-          url: 'audio/audio0.mp3'
-        },
-        {
-          _meta: {
-            title: 'Cape Up with Jonathan Capehart',
-            date: '12/04/18',
-            cover: 'cover1.jpg'
-          },
+          description: 'Steve Hendrix and Peggy McGlone track the journey of a T. rex fossil to the newly reopened fossil hall at the Smithsonian National Museum of Natural History. Peter Holley shares how content about prison is making a space for former inmates on YouTube.',
+          album: 'Post Reports',
+          length: '25:17',
+          date: '06/07/19',
+          url: 'audio/audio0.mp3',
+					cover_art_url: "audio/cover0.png"
+				},
+				{
           name: 'How Derek Black went from being the golden boy of white nationalism to its outspoken critic',
-          url: 'audio/audio1.mp3'
+          description: 'Derek Black was the golden boy of white nationalism. His godfather is David Duke. After enrolling in college, he began to change. Eli Saslow chronicles Black\'s transformation in his new book "Rising Out of Hatred."',
+          album: 'Cape Up with Jonathan Capehart',
+          length: '49:33',
+          date: '12/04/18',
+          url: 'audio/audio1.mp3',
+					cover_art_url: "audio/cover1.jpg"
         },
-        {
-          _meta: {
-            title: 'The Daily 202\'s Big Idea',
-            date: '06/07/2019',
-            cover: 'cover2.jpg'
-          },
+				{
           name: 'Walmart robots make human workers feel like machines',
-          url: 'audio/audio2.mp3'
-        },
-        {
-          _meta: {
-            title: 'Retropod',
-            date: '06/07/2019',
-            cover: 'cover3.jpg'
-          },
+          description: 'To Walmart executives, the self-driving floor scrubber is the future of retail automation. They have made a multimillion-dollar bet that advanced robots will optimize operations, cut costs and revolutionize the American superstore.',
+          album: 'The Daily 202\'s Big Idea',
+          length: '10:43',
+          date: '06/07/2019',
+          url: 'audio/audio2.mp3',
+					cover_art_url: "audio/cover2.jpg"
+				},
+				{
           name: 'The painter who became the CIA’s master of disguise',
-          url: 'audio/audio3.mp3'
-        },
+          description: 'The spy business is all about masking the truth. One CIA agent’s deceptions and sham identities were so enterprising that he earned the nickname “Master of Disguise.”',
+          album: 'Retropod',
+          length: '10:11',
+          date: '06/07/2019',
+          url: 'audio/audio3.mp3',
+					cover_art_url: "audio/cover3.jpg"
+				}
       ]
 
       const handleClick = event => {

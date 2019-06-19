@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Audio View API plugin</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/amplitudejs@4.1.0/dist/amplitude.js"
+    ></script>
+
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+  </head>
+  <body>
+    <main role="main">
+      <div class="container-fluid">
+        <div class="row justify-content-center">
+          <div class="col-lg-8 col-xl-6 col-sm-12">
+            <div class="row justify-content-center">
+              <div class="col-12 py-3">
+                <h6 id="text_album"></h6>
+                <h4><small id="text_name"></small></h4>
+              </div>
+              <div class="col-6">
+                <div>
+                  <img
+                    data-amplitude-song-info="cover_art_url"
+                    style="width: 100%"
+                  />
+                  <div id="player-left-bottom" class="pt-3">
+                    <div id="time-container">
+                      <span class="current-time">
+                        <span class="amplitude-current-minutes"></span>:<span
+                          class="amplitude-current-seconds"
+                        ></span>
+                      </span>
+                      <div id="progress-container">
+                        <input type="range" class="amplitude-song-slider" />
+                        <progress
+                          id="song-played-progress"
+                          class="amplitude-song-played-progress"
+                        ></progress>
+                        <progress
+                          id="song-buffered-progress"
+                          class="amplitude-buffered-progress"
+                          value="0"
+                        ></progress>
+                      </div>
+                      <span class="duration">
+                        <span class="amplitude-duration-minutes"></span>:<span
+                          class="amplitude-duration-seconds"
+                        ></span>
+                      </span>
+                    </div>
+
+                    <div id="control-container">
+                      <div id="central-control-container">
+                        <div id="central-controls">
+                          <div
+                            class="amplitude-play-pause"
+                            id="play-pause"
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div id="volume-container">
+                        <div class="volume-controls">
+                          <div class="amplitude-mute amplitude-not-muted"></div>
+                          <input type="range" class="amplitude-volume-slider" />
+                          <div class="ms-range-fix"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 pt-5 pb-5">
+                <div class="text-muted">
+                  <span style="width: 10em; display: inline-block"
+                    >Length: <span id="text_length"></span
+                  ></span>
+                  <span>Released: <span id="text_date"></span></span>
+                </div>
+                <p class="pt-3" id="text_description"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+  <script type="text/javascript">
+    const sendMessage = function(action, data) {
+      window.parent.postMessage(
+        JSON.stringify({
+          source: 'custom_embed',
+          action,
+          data,
+          key: parseQueryString()['k']
+        }),
+        '*'
+      )
+    }
+
+    const parseQueryString = function() {
+      const params = location.search.split('?')[1] || ''
+      const kv = params.split('&')
+      return kv.reduce((result, item) => {
+        const [key, value] = item.split('=')
+        return Object.assign(result, {
+          [key]: value
+        })
+      }, {})
+    }
+
+    const parameters = Object.assign(
+      {
+        wait: 0
+      },
+      parseQueryString()
+    )
+    const data = JSON.parse(decodeURIComponent(parameters.p))
+
+    Amplitude.init({
+      songs: [data.config]
+    })
+
+    Object.keys(data.config).forEach(key => {
+      const element = document.querySelector('#text_' + key)
+      if (!element) {
+        return
+      }
+      element.innerHTML = data.config[key]
+    })
+
+    var coverImage = new Image()
+    coverImage.onload = function() {
+      sendMessage('ready', {
+        height: document.documentElement.scrollHeight
+      })
+    }
+    coverImage.src = data.config.cover_art_url
+  </script>
+</html>
