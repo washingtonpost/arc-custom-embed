@@ -23,7 +23,7 @@ const configIsValid = (config: any): boolean => {
       key => Object.prototype.toString.call(config[key]) === '[object Object]'
     )
     .reduce<boolean>((result, key) => {
-      return result && dataIsValid(config[key])
+      return result && configIsValid(config[key])
     }, true)
 }
 

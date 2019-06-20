@@ -6,16 +6,23 @@
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     />
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/amplitudejs@4.1.0/dist/amplitude.js"
-    ></script>
-
+    <link href="css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link
+      href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css"
+      rel="stylesheet"
+    />
     <link rel="preload" href="img/pause.svg" as="image" />
     <link rel="preload" href="img/volume.svg" as="image" />
     <link rel="preload" href="img/mute.svg" as="image" />
     <link rel="preload" href="img/now-playing.svg" as="image" />
+    <style>
+      .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 10px; }
+      .toggle.ios .toggle-handle {
+        border-radius: 10px;
+        border: 1px solid #ccc;
+      }
+    </style>
   </head>
   <body>
     <main role="main">
@@ -86,16 +93,37 @@
                   </div>
                 </div>
               </div>
-              <!-- <div class="col-12 pt-5">
-                <div class="text-muted">
-                  <span style="width: 10em; display: inline-block"
-                    >Length: <span id="text_length"></span
-                  ></span>
-                  <span>Released: <span id="text_date"></span></span>
-                </div>
-                <p class="pt-3" id="text_description"></p>
-              </div> -->
-              <div class="col-12 pt-5 pb-5">
+              <div class="col-12 pt-5">
+                <form>
+                  <div class="form-group row">
+                    <label for="autoplay_ctrl" style="width: 6em;">Auto play</label>
+                    <input
+                      id="autoplay_ctrl"
+                      type="checkbox"
+                      data-toggle="toggle"
+                      data-style="ios"
+                      data-size="xs"
+                      data-width="60"
+                    />
+                  </div>
+                  <div class="form-group row">
+                      <label for="enableads_ctrl" style="width: 6em;">Enable ads</label>
+                      <input
+                        id="enableads_ctrl"
+                        checked
+                        type="checkbox"
+                        data-toggle="toggle"
+                        data-style="ios"
+                        data-size="xs"
+                        data-width="60"
+                      />
+                    </div>
+                    <div class="form-group row">
+                        <a href="#">Edit canonical audio metadata&nbsp;&nbsp;<i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                  </form>
+              </div>
+              <div class="col-12 pb-5">
                 <button
                   type="button"
                   class="btn btn-primary float-right px-4"
@@ -117,6 +145,18 @@
       </div>
     </main>
   </body>
+
+  <script
+    type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/amplitudejs@4.1.0/dist/amplitude.js"
+  ></script>
+  <script
+    src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+    crossorigin="anonymous"
+  ></script>
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
+
   <script type="text/javascript">
     const sendMessage = function(action, data) {
       window.parent.postMessage(
@@ -133,6 +173,10 @@
 
     const applyChanges = () => {
       dataHolder.data.config.name = document.querySelector('#data_name').value
+      dataHolder.data.config.settings = {
+        autoplay: document.querySelector('#autoplay_ctrl').checked,
+        enableAds: document.querySelector('#enableads_ctrl').checked
+      }
       sendMessage('data', dataHolder.data)
     }
 
@@ -163,16 +207,14 @@
       songs: [dataHolder.data.config]
     })
 
+    document.querySelector('#text_album').innerHTML = dataHolder.data.config.album
     document.querySelector('#text_id').innerHTML = dataHolder.data.id
     document.querySelector('#data_name').value = dataHolder.data.config.name
-
-    Object.keys(dataHolder.data.config).forEach(key => {
-      const element = document.querySelector('#text_' + key)
-      if (!element) {
-        return
-      }
-      element.innerHTML = dataHolder.data.config[key]
-    })
+    if (dataHolder.data.config.settings) {
+      const { autoplay, enableAds } = dataHolder.data.config.settings
+      document.querySelector('#autoplay_ctrl').checked = autoplay
+      document.querySelector('#enableads_ctrl').checked = enableAds
+    }
 
     var coverImage = new Image()
     coverImage.onload = function() {
