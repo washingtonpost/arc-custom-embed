@@ -119,6 +119,18 @@
       }, {})
     }
 
+    const checkInit = () => {
+      if (++checkInit.count < 2) {
+        return
+      }
+      setTimeout(() => {
+        sendMessage('ready', {
+          height: document.documentElement.scrollHeight
+        })
+      }, 100)
+    }
+    checkInit.count = 0
+
     const parameters = Object.assign(
       {
         wait: 0
@@ -128,7 +140,10 @@
     const data = JSON.parse(decodeURIComponent(parameters.p))
 
     Amplitude.init({
-      songs: [data.config]
+      songs: [data.config],
+      callbacks: {
+        initialized: checkInit
+      }
     })
 
     Object.keys(data.config).forEach(key => {
@@ -141,9 +156,7 @@
 
     var coverImage = new Image()
     coverImage.onload = function() {
-      sendMessage('ready', {
-        height: document.documentElement.scrollHeight
-      })
+      checkInit()
     }
     coverImage.src = data.config.cover_art_url
   </script>
