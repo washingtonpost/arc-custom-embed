@@ -40,17 +40,21 @@
         background-color: white;        
       }
       .active-animate {
-        animation: flash-animation 250ms infinite;
+        animation: flash-animation 1000ms 1;
       }
 
       @keyframes flash-animation {
-        0%, 49% {
+        0% {
           background-color: white;
           border-color: white;
         }
-        50%, 100% {
+        50% {
           background-color: #a3c4ff;
           border-color: #b3d4ff;
+        }
+        100% {
+          background-color: white;
+          border-color: white;
         }
       }      
     </style>
@@ -116,11 +120,10 @@
                   id="exampleFormControlSelect1"
                 >
                   <option>All</option>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
+                  <option>Post Reports</option>
+                  <option>Cape Up with Jonathan Capehart</option>
+                  <option>The Daily 202's Big Idea</option>
+                  <option>Retropod</option>
                 </select>
               </div>
               <div class="form-check mt-5">
@@ -301,7 +304,6 @@
           return
         }
         listGroupItem.classList.add('active-animate')
-        listGroupItem.classList.add('active')
         
         setTimeout(() => {
           sendMessage('data', {
