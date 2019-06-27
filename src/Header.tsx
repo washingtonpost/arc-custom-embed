@@ -18,7 +18,7 @@ export default function Header() {
                       </label>
                       <SettingsInput
                         storageKey="arc.custom_embed.searchApi"
-                        defaultValue="https://d2o92lg4k51qh.cloudfront.net/searchApi.html"
+                        defaultValue="https://d2o92lg4k51qh.cloudfront.net/audioSearchApi.html"
                       />
                     </div>
                     <div className="col-md-3 mb-3">
@@ -38,7 +38,7 @@ export default function Header() {
                       </label>
                       <SettingsInput
                         storageKey="arc.custom_embed.viewApi"
-                        defaultValue="https://d2o92lg4k51qh.cloudfront.net/viewApi.html"
+                        defaultValue="https://d2o92lg4k51qh.cloudfront.net/audioViewApi.html"
                       />
                     </div>
                     <div className="col-md-3 mb-3">
@@ -58,7 +58,7 @@ export default function Header() {
                       </label>
                       <SettingsInput
                         storageKey="arc.custom_embed.editApi"
-                        defaultValue="https://d2o92lg4k51qh.cloudfront.net/editApi.html"
+                        defaultValue="https://d2o92lg4k51qh.cloudfront.net/audioEditApi.html"
                       />
                     </div>
                     <div className="col-md-3 mb-3">

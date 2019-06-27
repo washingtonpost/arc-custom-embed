@@ -4,10 +4,16 @@ export interface SettingsInputProps {
   storageKey: string
   defaultValue: string
 }
+const VERSION = 2
 export default function SettingsInput(props: SettingsInputProps) {
   useEffect(() => {
     if (!localStorage.getItem(props.storageKey)) {
       localStorage.setItem(props.storageKey, props.defaultValue)
+    }
+    const versionKey = `${props.storageKey}.v${VERSION}`
+    if (!localStorage.getItem(versionKey)) {
+      localStorage.setItem(props.storageKey, props.defaultValue)
+      localStorage.setItem(versionKey, 'set')
     }
   }, [props.storageKey, props.defaultValue])
   const [value, setValue] = useState(
