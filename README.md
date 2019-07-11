@@ -16,6 +16,7 @@ For Arc users with PageBuilder Fusion running, we recommend walking through the 
 Whether you're using Fusion or not, it may help to look at our starter code or reference implementations.
 
 [Starter Code](./public/blank)
+
 [Reference Implementations](./public/)
 
 For all users, we suggest running the testing tool:
