@@ -11,7 +11,7 @@ This project contains:
 
 For Arc users with PageBuilder Fusion running, we recommend walking through the process of building an embed first.
 
-[Getting Started with Custom Embeds](getting-started.md)
+[Getting Started with Custom Embeds](./docs/getting-started.md)
 
 Whether you're using Fusion or not, it may help to look at our starter code or reference implementations.
 
@@ -20,8 +20,8 @@ Whether you're using Fusion or not, it may help to look at our starter code or r
 
 For all users, we suggest running the testing tool:
 
-[Testing Tool Docs](testing.md)
+[Testing Tool Docs](./docs/testing.md)
 
 For more information, see the complete embed specification:
 
-[Custom Embed Specification](reference.md)
+[Custom Embed Specification](./docs/reference.md)
