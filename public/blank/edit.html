@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#212529" />
+    <title>Edit API plugin</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <template id="content_template">
+      <!-- Rendered Item -->
+      <div class="col-md-12" id="%item_id%">
+        %text%
+      </div>
+      <div class="col-md-12">
+        %option_1%
+      </div>
+    </template>
+
+    <main role="main">
+      <div class="album py-5 bg-light">
+        <div class="container">
+          <div class="row" id="content_holder">
+            Loading...
+          </div>
+
+          <!-- Edit Form -->
+          <div class="row" id="config_edit">
+            <div class="col-md-6">
+              <label for="option_1"><span>Option 1</span>
+                <input id="option_1" name="option_1" type="textfield" value="" />
+              </label>
+            </div>
+            <div class="col-md-6 p-3">
+              <button type="button" class="btn btn-primary" id="btn_apply">
+                Apply Changes
+              </button>
+              <button type="button" class="btn btn-light mx-1" id="btn_cancel">
+                Close Editor
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="//ajaxorg.github.io/ace-builds/src-min-noconflict/ace.js"
+      type="text/javascript"
+      charset="utf-8"
+    ></script>
+    <script>
+     const sendMessage = function(action, data) {
+       window.parent.postMessage(
+         JSON.stringify({
+           source: 'custom_embed',
+           action,
+           data,
+           key: parseQueryString()['k']
+         }),
+         '*'
+       )
+     }
+
+     const parseQueryString = function() {
+       const params = location.search.split('?')[1] || ''
+       const kv = params.split('&')
+       return kv.reduce((result, item) => {
+         const [key, value] = item.split('=')
+         return Object.assign(result, {
+           [key]: value
+         })
+       }, {})
+     }
+
+     let data = {}      // ANS custom embed response
+     let content = {}   // The fetched content from external data source
+
+     // -------------------------------------------------
+
+
+     // Retrieve the content data based on parameters
+     const fetchData = (ansCustomEmbed) => {
+       content = {
+         id: 1,
+         text: 'Result One'
+       }
+       render(content, ansCustomEmbed.config)
+     }
+
+     // Render the content data and contextual configuration together
+     const render = (content, config) => {
+       const template = document.getElementById('content_template').innerHTML
+       const id = 'item-' + content.id
+       const html = template
+         .replace('%id%', id)
+         .replace('%text%', content.text)
+         .replace('%option_1%', (config.option_1 ? config.option_1 : ""))
+
+       const element = document.createElement('div')
+       document.getElementById('content_holder').innerHTML = ''
+       document.getElementById('content_holder').appendChild(element)
+       element.outerHTML = html
+
+       document.getElementById('option_1').value = (config.option_1 ? config.option_1 : "")
+     }
+
+
+     // Update config based on form changes, submit back to Composer and re-render
+     const applyChanges = () => {
+       data.config.option_1 = document.getElementById('option_1').value
+
+       // Update Composer and re-render form
+       sendMessage('data', data)
+       render(content, data.config)
+     }
+
+     // -------------------------------------------------
+
+     const dismissEditor = () => {
+       sendMessage('cancel')
+     }
+
+     window.onload = function() {
+       const parameters = Object.assign(
+         {
+           wait: 0
+         },
+         parseQueryString()
+       )
+       // Emulate wait time
+       setTimeout(function() {
+         sendMessage('ready', {
+           height: document.documentElement.scrollHeight
+         })
+       }, Number.parseInt(parameters.wait))
+
+       /* editor = ace.edit('editor')
+        * editor.getSession().setUseWorker(false)
+        * editor.setTheme('ace/theme/chrome')
+        * editor.getSession().setMode('ace/mode/json')
+        * editor.setOptions({
+        *   autoScrollEditorIntoView: true,
+        *   copyWithEmptySelection: true
+        * })
+        * editor.session.setUseWrapMode(true)*/
+       //editor.session.on('change', function(delta) {
+       //  renderChanges()
+       //})
+
+       data = JSON.parse(decodeURIComponent(parameters.p))
+       fetchData(data)
+       document.getElementById('btn_apply').onclick = applyChanges
+       document.getElementById('btn_cancel').onclick = dismissEditor
+     }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#212529" />
+    <title>View API plugin</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <template id="content_template">
+      <!-- Rendered Item -->
+      <div class="col-md-12" id="%id%">
+        %text%
+      </div>
+      <div class="col-md-12">
+        %option_1%
+      </div>
+    </template>
+    <main role="main">
+      <div class="album bg-light">
+        <div class="container-fluid">
+          <div class="row" id="search_content"></div>
+        </div>
+      </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+     const sendMessage = function(action, data, key) {
+       window.parent.postMessage(
+         JSON.stringify({
+           source: 'custom_embed',
+           action,
+           data,
+           key: parseQueryString()['k']
+         }),
+         '*'
+       )
+     }
+
+     const parseQueryString = function() {
+       const params = location.search.split('?')[1] || ''
+       const kv = params.split('&')
+       return kv.reduce((result, item) => {
+         const [key, value] = item.split('=')
+         return Object.assign(result, {
+           [key]: value
+         })
+       }, {})
+     }
+
+     // ------------------------------------------------
+
+
+     let data = {}
+
+     // Retrieve the content data based on parameters
+     const fetchData = (ansCustomEmbed) => {
+       data = {
+         'text': "Result One",
+         'id': 1,
+       };
+       render(data, ansCustomEmbed.config)
+     }
+
+     // Render the content data and contextual configuration together
+     const render = (data, config) => {
+       const template = document.getElementById('content_template').innerHTML
+       const id = 'item-' + data.id
+       const html = template
+         .replace('%id%', id)
+         .replace('%text%', data.text)
+         .replace('%option_1%', (config.option_1 ? config.option_1 : ""))
+
+       const element = document.createElement('div')
+       document.getElementById('search_content').appendChild(element)
+       element.outerHTML = html
+     }
+
+     // ------------------------------------------------
+
+
+     window.onload = function() {
+       const parameters = Object.assign(
+         {
+           wait: 0
+         },
+         parseQueryString()
+
+       )
+       fetchData(JSON.parse(decodeURIComponent(parameters.p)))
+
+       // Emulate wait time
+       setTimeout(function() {
+         sendMessage('ready', {
+           height: document.documentElement.scrollHeight
+         })
+       }, Number.parseInt(parameters.wait) + 10)
+
+     }
+    </script>
+  </body>
+</html>
