@@ -79,8 +79,11 @@ import { OMDB_API_KEY } from 'fusion:environment'
 const resolve = (query) => {
   const requestUri = `https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&plot=full`
 
-  if (query.hasOwnProperty('movieTitle')) return `${requestUri}&t=${query.movieTitle}`
-  if (query.hasOwnProperty('imdbID')) return `${requestUri}&i=${query.imdbID}`
+  if (query.hasOwnProperty('movieTitle')) {
+    return `${requestUri}&t=${query.movieTitle}`
+  } else if (query.hasOwnProperty('imdbID')) {
+    return `${requestUri}&i=${query.imdbID}`
+  }
 
   throw new Error('movie-find content source requires a movieTitle or imdbID')
 }
@@ -96,6 +99,44 @@ export default {
 
 This will allow us to make client-side calls like the following in our Composer Custom Embed:
 `/pf/api/v3/content/fetch/movie-find?query={"imdbID":"tt0107290"}`
+
+
+We'll need one additional content source for our search panel to find a list of movies that match a certain title. Let's create a new content source `movie-search`:
+
+```javascript
+/*    /content/sources/movie-search.js    */
+
+import { OMDB_API_KEY } from 'fusion:environment'
+
+const resolve = (query) => {
+  const requestUri = `https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&plot=full`
+
+  let query_string = ''
+
+  if (query.hasOwnProperty('text')) {
+    query_string = `${requestUri}&s=${query.text}&type=movie`
+  }
+  else {
+    throw new Error('movie-search content source requires text')
+  }
+
+  if (query.hasOwnProperty('year')) {
+    query_string += `&y={query.year}`
+  }
+
+  return query_string
+}
+
+export default {
+  resolve,
+  params: {
+    text: 'text',
+    year: 'text'
+  }
+}
+
+```
+
 
 
 
@@ -135,12 +176,12 @@ That's straightforward. But it still doesn't do very much. So let's go implement
 
 Here's where things get interesting. We can now call the content source we built in Step 2 to retrieve data for our search results. We can use the Fusion HTTP endpoint for fetching data from a content source. Let's check the data first to make sure we know what the data from our content source looks like. Hit this URL in your browser:
 
-http://localhost/pf/api/v3/content/fetch/movie-find?query={%22imdbID%22:%22tt0107290%22}
+http://localhost/pf/api/v3/content/fetch/movie-search?query={%22text%22:%22Jurassic%22}
 
 This gives us back data like:
 
 ```json
-{"Title":"Jurassic Park","Year":"1993","Rated":"PG-13","Released":"11 Jun 1993","Runtime":"127 min","Genre":"Adventure, Sci-Fi, Thriller","Director":"Steven Spielberg","Writer":"Michael Crichton (novel), Michael Crichton (screenplay), David Koepp (screenplay)","Actors":"Sam Neill, Laura Dern, Jeff Goldblum, Richard Attenborough","Plot":"Huge advancements in scientific technology have enabled a mogul to create an island full of living dinosaurs. John Hammond has invited four individuals, along with his two grandchildren, to join him at Jurassic Park. But will everything go according to plan? A park employee attempts to steal dinosaur embryos, critical security systems are shut down and it now becomes a race for survival with dinosaurs roaming freely over the island.","Language":"English, Spanish","Country":"USA","Awards":"Won 3 Oscars. Another 32 wins & 25 nominations.","Poster":"https://m.media-amazon.com/images/M/MV5BMjM2MDgxMDg0Nl5BMl5BanBnXkFtZTgwNTM2OTM5NDE@._V1_SX300.jpg","Ratings":[{"Source":"Internet Movie Database","Value":"8.1/10"},{"Source":"Rotten Tomatoes","Value":"91%"},{"Source":"Metacritic","Value":"68/100"}],"Metascore":"68","imdbRating":"8.1","imdbVotes":"784,720","imdbID":"tt0107290","Type":"movie","DVD":"10 Oct 2000","BoxOffice":"$45,299,680","Production":"Universal City Studios","Website":"http://www.jurassicpark.com/maingate_flash.html","Response":"True"}
+{"Search":[{"Title":"Jurassic Park","Year":"1993","imdbID":"tt0107290","Type":"movie","Poster":"https://m.media-amazon.com/images/M/MV5BMjM2MDgxMDg0Nl5BMl5BanBnXkFtZTgwNTM2OTM5NDE@._V1_SX300.jpg"},{"Title":"Jurassic World","Year":"2015","imdbID":"tt0369610","Type":"movie","Poster":"https://m.media-amazon.com/images/M/MV5BNzQ3OTY4NjAtNzM5OS00N2ZhLWJlOWUtYzYwZjNmOWRiMzcyXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg"},{"Title":"The Lost World: Jurassic Park","Year":"1997","imdbID":"tt0119567","Type":"movie","Poster":"https://m.media-amazon.com/images/M/MV5BMDFlMmM4Y2QtNDg1ZS00MWVlLTlmODgtZDdhYjY5YjdhN2M0XkEyXkFqcGdeQXVyNTI4MjkwNjA@._V1_SX300.jpg"},{"Title":"Jurassic Park III","Year":"2001","imdbID":"tt0163025","Type":"movie","Poster":"https://m.media-amazon.com/images/M/MV5BZDMyZGJjOGItYjJkZC00MDVlLWE0Y2YtZGIwMDExYWE3MGQ3XkEyXkFqcGdeQXVyNDYyMDk5MTU@._V1_SX300.jpg"},{"Title":"Jurassic World: Fallen Kingdom","Year":"2018","imdbID":"tt4881806","Type":"movie","Poster":"https://m.media-amazon.com/images/M/MV5BNzIxMjYwNDEwN15BMl5BanBnXkFtZTgwMzk5MDI3NTM@._V1_SX300.jpg"},{"Title":"Jurassic Shark","Year":"2012","imdbID":"tt2071491","Type":"movie","Poster":"https://m.media-amazon.com/images/M/MV5BODI1ODAyODgtZDYzZS00ZTM2LTg5MzMtZjNjMDFjMzlkZGQ2XkEyXkFqcGdeQXVyMTg0MTI3Mg@@._V1_SX300.jpg"},{"Title":"Jurassic City","Year":"2015","imdbID":"tt2905674","Type":"movie","Poster":"https://m.media-amazon.com/images/M/MV5BMjM1MzUyMTk5MV5BMl5BanBnXkFtZTgwOTc2NzA0NDE@._V1_SX300.jpg"},{"Title":"The Jurassic Games","Year":"2018","imdbID":"tt6710826","Type":"movie","Poster":"https://m.media-amazon.com/images/M/MV5BZWJkMzE4ZTAtOTY1ZS00YmZjLWI2MzQtZTg4MzdiN2U4NmUyXkEyXkFqcGdeQXVyMTUwMzY1MDM@._V1_SX300.jpg"},{"Title":"Jurassic Prey","Year":"2015","imdbID":"tt3469284","Type":"movie","Poster":"https://m.media-amazon.com/images/M/MV5BMTQ4MDg1NDkyNl5BMl5BanBnXkFtZTgwNTY3MTM2NDE@._V1_SX300.jpg"},{"Title":"The Making of 'Jurassic Park'","Year":"1995","imdbID":"tt0256908","Type":"movie","Poster":"https://m.media-amazon.com/images/M/MV5BMjlhY2Y5NGYtZDdlMS00YzhhLWJhNzQtNWYzNTQzZDJjNGU2XkEyXkFqcGdeQXVyODY0NzcxNw@@._V1_SX300.jpg"}],"totalResults":"98","Response":"True","_id":"8e7343a11b4e2286a9ec0b93495aa3f3c618deeba43fbc45f0f92919f3853ade"}
 ```
 
 Alright, so we know what the data looks like and how to retrieve it. It's straightforward from there to write a client-side call to this endpoint.
@@ -510,16 +551,16 @@ class MovieDetail extends Component {
     this.fetchContent({
       movie: {
         source: 'movie-find',
-        query: { "imdbID": imdbID },
+        query: { imdbID: imdbID },
         transform: (data) => {
-          const movieData = data || {}
-
-          if (!show_poster) {
-            movieData.Poster = null
-          }
-          movieData.caption = caption
-          //this.state.movie = movie
-          return movieData
+          return Object.assign(
+            {},
+            data,
+            {
+              Poster: show_poster ? data.Poster : null,
+              caption: caption
+            }
+          )
         }
       }
     })
@@ -590,20 +631,14 @@ import MovieDetail from '../../../movies/movie-detail'
 
 class CustomEmbedBody extends Component {
 
-  constructor(props) {
-    super(props)
-
-    this.element = this.props.element
-  }
-
   render() {
 
     return (
       <div className="customEmbed">
         <MovieDetail
-          imdbID={this.element.embed.id}
-          caption={this.element.embed.config.caption}
-          show_poster={this.element.embed.config.show_poster}
+          imdbID={this.props.element.embed.id}
+          caption={this.props.element.embed.config.caption}
+          show_poster={this.props.element.embed.config.show_poster}
           />
 
       </div>
@@ -615,7 +650,7 @@ class CustomEmbedBody extends Component {
 export default CustomEmbedBody
 ```
 
-This is component is pretty basic for now, but it would be a good place in the future to `switch` between multiple custom embed types, once we have them. In the meantime, it extracts the relevant fields from our custom embed and passes them into the updated movie detail component.
+This component is pretty basic for now, but it would be a good place in the future to `switch` between multiple custom embed types, once we have them. In the meantime, it extracts the relevant fields from our custom embed and passes them into the updated movie detail component.
 
 And voila! Our movies appear inline in our articles!
 
