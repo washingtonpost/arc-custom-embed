@@ -102,7 +102,8 @@
           source: 'custom_embed',
           action,
           data,
-          key: parseQueryString()['k']
+          key: parseQueryString()['k'],
+          isAnsRequired: true,
         }),
         '*'
       )
@@ -159,5 +160,10 @@
       checkInit()
     }
     coverImage.src = data.config.cover_art_url
+
+    /*** Uncomment to see the received message ***/
+    // window.addEventListener('message', (e) => {
+    //   console.log(e)
+    // }, false)
   </script>
 </html>

@@ -164,7 +164,8 @@
           source: 'custom_embed',
           action,
           data,
-          key: parseQueryString()['k']
+          key: parseQueryString()['k'],
+          isAnsRequired: false
         }),
         '*'
       )
@@ -225,5 +226,9 @@
     coverImage.src = dataHolder.data.config.cover_art_url
     document.getElementById('btn_apply').onclick = applyChanges
     document.getElementById('btn_cancel').onclick = dismissEditor
+    /*** Uncomment to see the received message ***/
+    // window.addEventListener('message', (e) => {
+    //   console.log(e)
+    // }, false)
   </script>
 </html>
