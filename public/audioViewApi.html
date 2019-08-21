@@ -103,7 +103,6 @@
           action,
           data,
           key: parseQueryString()['k'],
-          isAnsRequired: true,
         }),
         '*'
       )
@@ -161,9 +160,5 @@
     }
     coverImage.src = data.config.cover_art_url
 
-    /*** Uncomment to see the received message ***/
-    // window.addEventListener('message', (e) => {
-    //   console.log(e)
-    // }, false)
   </script>
 </html>

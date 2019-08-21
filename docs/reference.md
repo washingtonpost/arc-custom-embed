@@ -64,6 +64,65 @@ Ready message should be send by a plugins as soon as it renders their content an
 
 If ready message will not be sent within ~10 seconds, Ellipsis will render a timeout error and plugin content will be discarded.
 
+Request additional Story ANS
+
+Customers can obtain addition ANS data from Ellipsis via `postMessage`. Ellipsis/Composer will send back the data with the additional fields of:
+
+1. Headlines
+2. Subheadlines
+3. Taxonomy
+
+To acheive this:
+- Add an additional flag `isAnsRequired` set to `true` in your API where `postMessage()` is happening.
+- `postMessage()` with Ready message `action = 'ready'`
+- E.g.
+```javascript
+  window.parent.postMessage(
+    JSON.stringify({
+      source: 'custom_embed',
+      action: 'ready',
+      data: { height: 900 },
+      key: parseQueryString()['k'],
+      isAnsRequired: false    // Change this to true
+    }),
+    targetOrigin
+  )
+```
+- Which will send out a message to Ellipsis/Composer that looks like:
+```javascript
+{source: "custom_embed", action: "ready", data: {…}, key: "1234567890", isAnsRequired: true}
+```
+- Ellipsis/Composer will postMessage back with additional Story ANS data:
+```javascript
+MessageEvent 
+{
+   "message":"ans_data",
+   "data":{
+      "headlines":{
+         "basic":"Test Headline",
+         "mobile":"",
+         "native":"",
+         ...
+      },
+      "subheadlines":{  "basic":"Test Sub Headline"},
+      "taxonomy":{
+         "sites":[{"_id":"/about-us", "type":"site", ...}],
+         "tags":[],
+         "sections":[],
+         ...
+      }
+   }
+}
+```
+#### Note
+- Ellipsis/Composer can send ANS back to Search, View, and Edit API
+- To receive, or check whats the result looks like, uncomment this example
+```javascript
+window.addEventListener('message', (e) => {
+  console.log(e)
+}, false)
+```
+
 Data message
 
 Data message should be send by search plugin when an item has been selected by user or edit plugin when editing is done. Data message should contain an embed data structure. Feel free to check the schema.
@@ -113,65 +172,7 @@ Message communication example
 |                                    | User accepted changes                                                                         |
 |                                    | ← {"source":"custom_embed","action":"data","key":"j0a","data":{…}}                                        |
 |                                    | /or/ User cancelled changes                                                                   |
-|                                    | ← {"source":"custom_embed","action":"cancel","key":"j0a"}                                                 |
-
-# Request additional Story ANS
-Customers can obtain addition ANS data from Ellipsis via `postMessage`. Ellipsis/Composer will send back the data with the additional fields of:
-
-1. Headlines
-2. Subheadlines
-3. Taxonomy
-
-To acheive this, simply
-- Add an additional flag `isAnsRequired` set to `true` in your API where `postMessage()` is happening. E.g.
-
-```javascript
-const sendMessage = function(action, data) {
-  window.parent.postMessage(
-    JSON.stringify({
-      source: 'custom_embed',
-      action,
-      data,
-      key: parseQueryString()['k'],
-      isAnsRequired: false    // Change this to true
-    }),
-    '*'
-  )
-}
-```
-- Which will send out a message to Ellipsis/Composer that looks like:
-```javascript
-{source: "custom_embed", action: "ready", data: {…}, key: "1234567890", isAnsRequired: true}
-```
-- Ellipsis/Composer will postMessage back with additional Story ANS data:
-```javascript
-MessageEvent 
-{
-   "message":"message",
-   "data":{
-      "headlines":{
-         "basic":"Test Headline",
-         "mobile":"",
-         "native":"",
-         ...
-      },
-      "subheadlines":{  "basic":"Test Sub Headline"},
-      "taxonomy":{
-         "sites":[{"_id":"/about-us", "type":"site", ...}],
-         "tags":[],
-         "sections":[],
-         ...
-      }
-   }
-}
-```
-#### Note
-- Example has been set up in the files `audioViewApi.html`, `audioSearchApi.html`, and `audioEditApi.html` under `/public` directory.
-- Ellipsis/Composer can send ANS back to Search, View, and Edit API
-- To receive, or check whats the result looks like, uncomment this part
-```javascript
-/*** Uncomment to see the received message ***/
-// window.addEventListener('message', (e) => {
-//   console.log(e)
-// }, false)
-```
+|                                    | ← {"source":"custom_embed","action":"cancel","key":"j0a"}                                     |
+| Ellipsis Sends Story ANS           |                                                                                               |
+|                                    | User requesting additional Story ANS                                                          |
+|                                    | ← {"source":"custom_embed","action":"ready",data: {…}, key: "j0a", isAnsRequired: true}       |

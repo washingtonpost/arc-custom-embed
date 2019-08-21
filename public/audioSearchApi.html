@@ -238,7 +238,6 @@
             action,
             data,
             key: parseQueryString()['k'],
-            isAnsRequired: false,
           }),
           '*'
         )
@@ -355,11 +354,6 @@
 
         Amplitude.init({ songs })
       }
-
-      /*** Uncomment to see the received message ***/
-      // window.addEventListener('message', (e) => {
-      //   console.log(e)
-      // }, false)
     </script>
   </body>
 </html>
