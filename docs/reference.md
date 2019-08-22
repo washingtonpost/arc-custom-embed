@@ -56,7 +56,7 @@ Plugins should response back through browser postMessage mechanism. Each message
 - key - a value from `k` query string parameter. Should be passed as-is
 - data - contain custom embed data or content height of the iframe
 
-Ready message
+## Ready message
 
 Ready message should be send by a plugins as soon as it renders their content and content height is known.
 
@@ -64,35 +64,36 @@ Ready message should be send by a plugins as soon as it renders their content an
 
 If ready message will not be sent within ~10 seconds, Ellipsis will render a timeout error and plugin content will be discarded.
 
-Request additional Story ANS
+### Request additional Story ANS
 
-Customers can obtain addition ANS data from Ellipsis via `postMessage`. Ellipsis/Composer will send back the data with the additional fields of:
+Customers can obtain addition ANS data from Ellipsis via `postMessage`. It can be done with **Search**, **View**, and **Edit** APIs. Ellipsis/Composer will send back the data with the additional fields of:
 
 1. Headlines
 2. Subheadlines
 3. Taxonomy
 
-To acheive this:
-- Add an additional flag `isAnsRequired` set to `true` in your API where `postMessage()` is happening.
-- `postMessage()` with Ready message `action = 'ready'`
-- E.g.
+To do this, add an additional flag `isAnsRequired` set to `true` in your API where `postMessage()` is being called and when `action` is `'ready'`:
 ```javascript
-  window.parent.postMessage(
-    JSON.stringify({
-      source: 'custom_embed',
-      action: 'ready',
-      data: { height: 900 },
-      key: parseQueryString()['k'],
-      isAnsRequired: false    // Change this to true
-    }),
-    targetOrigin
-  )
+const sendMessage = function(action, data) {
+  const messagePayload = {
+    ...,
+    action,
+    data,
+  }
+  // Ellipsis/Composer only accepts `isAnsRequired` flag when `action = 'ready'`
+  if (action === 'ready') {
+    messagePayload.isAnsRequired = false  // set to `true`
+  }
+  window.parent.postMessage(JSON.stringify(messagePayload), '*')
+}
+
+sendMessage('action', data)
 ```
-- Which will send out a message to Ellipsis/Composer that looks like:
+Which will send out a message to Ellipsis/Composer:
 ```javascript
 {source: "custom_embed", action: "ready", data: {…}, key: "1234567890", isAnsRequired: true}
 ```
-- Ellipsis/Composer will postMessage back with additional Story ANS data:
+Ellipsis/Composer will then `postMessage` back with additional Story ANS data:
 ```javascript
 MessageEvent 
 {
@@ -114,16 +115,16 @@ MessageEvent 
    }
 }
 ```
-#### Note
-- Ellipsis/Composer can send ANS back to Search, View, and Edit API
-- To receive, or check whats the result looks like, uncomment this example
+To test if the message is received properly, use the following example:
 ```javascript
 window.addEventListener('message', (e) => {
   console.log(e)
 }, false)
 ```
 
-Data message
+For reference, there is an example already set up in [audioSearchApi](../public/audioSearchApi.html#L234-L245).
+
+## Data message
 
 Data message should be send by search plugin when an item has been selected by user or edit plugin when editing is done. Data message should contain an embed data structure. Feel free to check the schema.
 
@@ -144,7 +145,7 @@ Data message should be send by search plugin when an item has been selected by u
 
 A data field should contain id, url and config fields. Those are required. Config object might have any arbitrary data structure. The only requirement is that it should not have referent, type and version fields. Config object should have as few fields as possible to properly configure the custom embed object. Please do not put large objects here. Instead, use data.id to identify internal resource and data.config to store configuration properties only.
 
-Cancel message
+## Cancel message
 
 Cancel message is used to notify Ellipsis that user wants to cancel search or discard any editing changes.
 
@@ -154,7 +155,7 @@ Cancel message notify Ellipsis to close the UI. It does nothing for the view int
 
 Ellipsis can close search or edit iframe by itself without notifying iframe content. Please consider this behavior and do not persist any changes in the system. The only proper way to persist changes is to send data through data message back to the ellipsis.
 
-Message communication example
+## Message communication example
 
 | Ellipsis                           | Plugin                                                                                        |
 | ---------------------------------- | --------------------------------------------------------------------------------------------- |

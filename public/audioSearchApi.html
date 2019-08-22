@@ -232,15 +232,16 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/amplitudejs@4.1.0/dist/amplitude.js"></script>
     <script>
       const sendMessage = function(action, data) {
-        window.parent.postMessage(
-          JSON.stringify({
-            source: 'custom_embed',
-            action,
-            data,
-            key: parseQueryString()['k'],
-          }),
-          '*'
-        )
+        const messagePayload = {
+          source: 'custom_embed',
+          action,
+          data,
+          key: parseQueryString()['k']
+        }
+        if (action === 'ready') {
+          messagePayload.isAnsRequired = false
+        }
+        window.parent.postMessage(JSON.stringify(messagePayload), '*')
       }
 
       const parseQueryString = function() {
