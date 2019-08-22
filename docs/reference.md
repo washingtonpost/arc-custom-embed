@@ -66,13 +66,13 @@ If ready message will not be sent within ~10 seconds, Ellipsis will render a tim
 
 ### Request additional Story ANS
 
-Customers can obtain addition ANS data from Ellipsis via `postMessage`. It can be done with **Search**, **View**, and **Edit** APIs. Ellipsis/Composer will send back the data with the additional fields of:
+Customers can obtain addition ANS data from Ellipsis via `postMessage`. It can be done with **Search**, **View**, and **Edit** integration. Ellipsis/Composer will send back the data with the additional fields of:
 
 1. Headlines
 2. Subheadlines
 3. Taxonomy
 
-To do this, add an additional flag `isAnsRequired` set to `true` in your API where `postMessage()` is being called and when `action` is `'ready'`:
+To do this, add an additional flag `isAnsRequired` set to `true` in your integration where `postMessage()` is being called and when `action` is `'ready'`:
 ```javascript
 const sendMessage = function(action, data) {
   const messagePayload = {

@@ -239,7 +239,7 @@
           key: parseQueryString()['k']
         }
         if (action === 'ready') {
-          messagePayload.isAnsRequired = false
+          messagePayload.isAnsRequired = true
         }
         window.parent.postMessage(JSON.stringify(messagePayload), '*')
       }
