@@ -37,7 +37,7 @@
       .list-group-item-action:hover:not(.active),
       .list-group-item-action:visited:not(.active) {
         color: #495057;
-        background-color: white;        
+        background-color: white;
       }
       .active-animate {
         animation: flash-animation 1000ms 1;
@@ -56,7 +56,7 @@
           background-color: white;
           border-color: white;
         }
-      }      
+      }
     </style>
   </head>
   <body>
@@ -232,15 +232,16 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/amplitudejs@4.1.0/dist/amplitude.js"></script>
     <script>
       const sendMessage = function(action, data) {
-        window.parent.postMessage(
-          JSON.stringify({
-            source: 'custom_embed',
-            action,
-            data,
-            key: parseQueryString()['k']
-          }),
-          '*'
-        )
+        const messagePayload = {
+          source: 'custom_embed',
+          action,
+          data,
+          key: parseQueryString()['k']
+        }
+        if (action === 'ready') {
+          messagePayload.isAnsRequired = true
+        }
+        window.parent.postMessage(JSON.stringify(messagePayload), '*')
       }
 
       const parseQueryString = function() {
@@ -304,7 +305,7 @@
           return
         }
         listGroupItem.classList.add('active-animate')
-        
+
         setTimeout(() => {
           sendMessage('data', {
             id: `aud-${index}`,

@@ -56,7 +56,7 @@ Plugins should response back through browser postMessage mechanism. Each message
 - key - a value from `k` query string parameter. Should be passed as-is
 - data - contain custom embed data or content height of the iframe
 
-Ready message
+## Ready message
 
 Ready message should be send by a plugins as soon as it renders their content and content height is known.
 
@@ -64,7 +64,67 @@ Ready message should be send by a plugins as soon as it renders their content an
 
 If ready message will not be sent within ~10 seconds, Ellipsis will render a timeout error and plugin content will be discarded.
 
-Data message
+### Request additional Story ANS
+
+Customers can obtain addition ANS data from Ellipsis via `postMessage`. It can be done with **Search**, **View**, and **Edit** integration. Ellipsis/Composer will send back the data with the additional fields of:
+
+1. Headlines
+2. Subheadlines
+3. Taxonomy
+
+To do this, add an additional flag `isAnsRequired` set to `true` in your integration where `postMessage()` is being called and when `action` is `'ready'`:
+```javascript
+const sendMessage = function(action, data) {
+  const messagePayload = {
+    ...,
+    action,
+    data,
+  }
+  // Ellipsis/Composer only accepts `isAnsRequired` flag when `action = 'ready'`
+  if (action === 'ready') {
+    messagePayload.isAnsRequired = false  // set to `true`
+  }
+  window.parent.postMessage(JSON.stringify(messagePayload), '*')
+}
+
+sendMessage('action', data)
+```
+Which will send out a message to Ellipsis/Composer:
+```javascript
+{source: "custom_embed", action: "ready", data: {…}, key: "1234567890", isAnsRequired: true}
+```
+Ellipsis/Composer will then `postMessage` back with additional Story ANS data:
+```javascript
+MessageEvent 
+{
+   "message":"ans_data",
+   "data":{
+      "headlines":{
+         "basic":"Test Headline",
+         "mobile":"",
+         "native":"",
+         ...
+      },
+      "subheadlines":{  "basic":"Test Sub Headline"},
+      "taxonomy":{
+         "sites":[{"_id":"/about-us", "type":"site", ...}],
+         "tags":[],
+         "sections":[],
+         ...
+      }
+   }
+}
+```
+To test if the message is received properly, use the following example:
+```javascript
+window.addEventListener('message', (e) => {
+  console.log(e)
+}, false)
+```
+
+For reference, there is an example already set up in [audioSearchApi](../public/audioSearchApi.html#L234-L245).
+
+## Data message
 
 Data message should be send by search plugin when an item has been selected by user or edit plugin when editing is done. Data message should contain an embed data structure. Feel free to check the schema.
 
@@ -85,7 +145,7 @@ Data message should be send by search plugin when an item has been selected by u
 
 A data field should contain id, url and config fields. Those are required. Config object might have any arbitrary data structure. The only requirement is that it should not have referent, type and version fields. Config object should have as few fields as possible to properly configure the custom embed object. Please do not put large objects here. Instead, use data.id to identify internal resource and data.config to store configuration properties only.
 
-Cancel message
+## Cancel message
 
 Cancel message is used to notify Ellipsis that user wants to cancel search or discard any editing changes.
 
@@ -95,7 +155,7 @@ Cancel message notify Ellipsis to close the UI. It does nothing for the view int
 
 Ellipsis can close search or edit iframe by itself without notifying iframe content. Please consider this behavior and do not persist any changes in the system. The only proper way to persist changes is to send data through data message back to the ellipsis.
 
-Message communication example
+## Message communication example
 
 | Ellipsis                           | Plugin                                                                                        |
 | ---------------------------------- | --------------------------------------------------------------------------------------------- |
@@ -113,4 +173,7 @@ Message communication example
 |                                    | User accepted changes                                                                         |
 |                                    | ← {"source":"custom_embed","action":"data","key":"j0a","data":{…}}                                        |
 |                                    | /or/ User cancelled changes                                                                   |
-|                                    | ← {"source":"custom_embed","action":"cancel","key":"j0a"}                                                 |
+|                                    | ← {"source":"custom_embed","action":"cancel","key":"j0a"}                                     |
+| Ellipsis Sends Story ANS           |                                                                                               |
+|                                    | User requesting additional Story ANS                                                          |
+|                                    | ← {"source":"custom_embed","action":"ready",data: {…}, key: "j0a", isAnsRequired: true}       |
