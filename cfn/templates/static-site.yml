@@ -2,6 +2,8 @@
 Metadata:
     Stackjack:
         CanonicalTemplate: v1/cfn/shared/static-site/static-site.template.yml
+        AllowDestroy:
+          - CloudFrontDistribution
 
 Parameters:
   RootDomainName:
