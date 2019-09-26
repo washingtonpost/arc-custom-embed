@@ -123,21 +123,15 @@
             source: 'custom_embed',
             action,
             data,
-            key: parseQueryString()['k']
+            key: parseQueryString('k')
           }),
           '*'
         )
       }
 
-      const parseQueryString = function() {
-        const params = location.search.split('?')[1] || ''
-        const kv = params.split('&')
-        return kv.reduce((result, item) => {
-          const [key, value] = item.split('=')
-          return Object.assign(result, {
-            [key]: value
-          })
-        }, {})
+      const parseQueryString = function(key) {
+        const url = new URL(location.href)
+        return url.searchParams.get(key)
       }
 
       const data = [
@@ -201,18 +195,12 @@
       }
 
       window.onload = function() {
-        const parameters = Object.assign(
-          {
-            wait: 0
-          },
-          parseQueryString()
-        )
         // Emulate wait time
         setTimeout(function() {
           sendMessage('ready', {
             height: document.documentElement.scrollHeight
           })
-        }, Number.parseInt(parameters.wait))
+        }, Number.parseInt(parseQueryString('wait') || 0))
 
         render()
       }
