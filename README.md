@@ -26,3 +26,10 @@ For all users, we suggest running the testing tool:
 For more information, see the complete embed specification:
 
 [Custom Embed Specification](./docs/reference.md)
+
+## Bugfixes
+
+A previous version of this example contained a bug that would result in spaces being decoded as plus (+) symbols. This
+was corrected on Sept 26th, 2019, but any work built off of an earlier version of this repo should be reviewed and
+modified if necessary. See [the following pull request](https://github.com/washingtonpost/arc-custom-embed/pull/6) for
+the changes applied.
