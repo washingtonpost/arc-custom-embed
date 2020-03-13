@@ -148,7 +148,9 @@ export default {
 
 ### 3. Create a search panel for your custom embed.
 
-We can get started by copying the [starter search code](https://raw.githubusercontent.com/washingtonpost/arc-custom-embed/master/public/starter/search.html) to /resources/plugins/composer/embeds/movie/search.html
+We can get started by copying the [starter search code](https://raw.githubusercontent.com/washingtonpost/arc-custom-embed/master/public/starter/search.html). The best practice is to save static html files to /resources/plugins/composer/embeds/movie/search.html
+
+Note: It is required that all static html files to be saved in the `/resources/plugins/composer` directory. If saved outside of this folder, a deployment version parameter (d) will be requested, and will have to be updated with every deployment, making it unmaintainable.
 
 Unfortunately, this base embed doesn't do very much. We'll need to add functionality.
 
@@ -294,6 +296,8 @@ Finally, we can test our whole flow by using the online custom embed testing too
 The search panel is working, but we still need to let users attach some contextual metadata to an embed. For that, we need to define an edit panel.
 
 Copy [starter edit code](https://raw.githubusercontent.com/washingtonpost/arc-custom-embed/master/public/starter/edit.html) to /resources/plugins/composer/embeds/movie/edit.html
+
+Note: It is required that all static html files to be saved in the `/resources/plugins/composer` directory. If saved outside of this folder, a deployment version parameter (d) will be requested, and will have to be updated with every deployment, making it unmaintainable.
 
 For our movie embeds, we'll let users control two things: whether or not to display the movie poster image, and to set an optional caption or tagline about the movie.
 
@@ -444,6 +448,8 @@ That's it for editing! We can test it using the same test tool we used for searc
 Phew! The hardest part is over. The search and edit panels are working. But we still need to tell Composer how to display the embed to writers, editors and content producers when it's embedded in a document. The view panel controls how the embed displays when it's at rest.
 
 Copy the [starter view code](https://raw.githubusercontent.com/washingtonpost/arc-custom-embed/master/public/starter/view.html) to /resources/plugins/composer/embeds/movie/view.html
+
+Note: It is required that all static html files to be saved in the `/resources/plugins/composer` directory. If saved outside of this folder, a deployment version parameter (d) will be requested, and will have to be updated with every deployment, making it unmaintainable.
 
 This one's a little easier -- a lot can be borrowed from the edit panel. Instead of a form, we just need to tell our view panel how to fetch and render content by id. We'll use the movie-find content source again, along with the config object passed in.
 
