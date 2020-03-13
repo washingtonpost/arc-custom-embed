@@ -286,7 +286,7 @@ Change handleClick to be:
 
 The data format we are returning here is based part of the ans [custom embed element](https://github.com/washingtonpost/ans-schema/blob/master/src/main/resources/schema/ans/0.10.3/story_elements/custom_embed.json) schema.
 
-Finally, we can test our whole flow by using the online custom embed testing tool. Visit the testing tool, select the config options, and set the search page to be http://localhost/pf/resources/plugins/composer/search.html.
+Finally, we can test our whole flow by using the online custom embed testing tool. Visit the testing tool, select the config options, and set the search page to be http://localhost/pf/resources/plugins/composer/embeds/movie/search.html.
 
 
 ### 4. Create an edit panel for your custom embed.
