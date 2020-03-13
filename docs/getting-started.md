@@ -2,7 +2,7 @@
 
 ## Use Cases
 
-Custom Embeds is a feature for Arc Composer (formerly Ellipsis) that allows developers to build content elements in stories that store an embedded link to a piece of content that lives outside Arc.
+Custom Embeds is a feature for Arc Composer that allows developers to build content elements in stories that store an embedded link to a piece of content that lives outside Arc.
 
 ## Requirements
 
@@ -152,7 +152,6 @@ We can get started by copying the [starter search code](https://raw.githubuserco
 
 Note: It is required that all static html files to be saved in the `/resources/plugins/composer` directory. If saved outside of this folder, a deployment version parameter (d) will be requested, and will have to be updated with every deployment, making it unmaintainable.
 
-
 Unfortunately, this base embed doesn't do very much. We'll need to add functionality.
 
 First, let's define our search form. Our users only really want to find movies by name, so we'll stick to a single text field and a Search button.
@@ -260,7 +259,7 @@ And we'll tweak the `render()` function just a bit to insert the data into this 
      }
 ```
 
-The search button shows results now. All that's left to do is let the user select one and send the data back to Ellipsis.
+The search button shows results now. All that's left to do is let the user select one and send the data back to Composer.
 
 Change handleClick to be:
 
@@ -299,7 +298,6 @@ The search panel is working, but we still need to let users attach some contextu
 Copy [starter edit code](https://raw.githubusercontent.com/washingtonpost/arc-custom-embed/master/public/starter/edit.html) to /resources/plugins/composer/embeds/movie/edit.html
 
 Note: It is required that all static html files to be saved in the `/resources/plugins/composer` directory. If saved outside of this folder, a deployment version parameter (d) will be requested, and will have to be updated with every deployment, making it unmaintainable.
-
 
 For our movie embeds, we'll let users control two things: whether or not to display the movie poster image, and to set an optional caption or tagline about the movie.
 
@@ -453,7 +451,6 @@ Copy the [starter view code](https://raw.githubusercontent.com/washingtonpost/ar
 
 Note: It is required that all static html files to be saved in the `/resources/plugins/composer` directory. If saved outside of this folder, a deployment version parameter (d) will be requested, and will have to be updated with every deployment, making it unmaintainable.
 
-
 This one's a little easier -- a lot can be borrowed from the edit panel. Instead of a form, we just need to tell our view panel how to fetch and render content by id. We'll use the movie-find content source again, along with the config object passed in.
 
 Fetch data looks the same as in edit panel:
@@ -530,7 +527,7 @@ Once again, we can test using the test tool.
 
 To wire these panels up in Composer, you'll need to host them on a public domain. Just zip up a bundle like you usually would and deploy to a test environment.
 
-Once they're uploaded, you can wire up Composer to use the panels in the settings page. See [these instructions](https://redirector.arcpublishing.com/alc/arc-products/ellipsis/user-docs/ellipsis-custom-embed-power-ups-for-rich-third-party-content/#Configuring-a-Custom-Embed-Integration).
+Once they're uploaded, you can wire up Composer to use the panels in the settings page. See [these instructions](https://redirector.arcpublishing.com/alc/arc-products/composer/user-docs/composer-custom-embed-power-ups-for-rich-third-party-content/#Configuring-a-Custom-Embed-Integration).
 
 Save a few documents with the embed in them, then go look at those documents published on the web.
 
