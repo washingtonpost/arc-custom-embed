@@ -2,7 +2,7 @@
 
 ## Use Cases
 
-Custom Embeds is a feature for Arc Composer (formerly Ellipsis) that allows developers to build content elements in stories that store an embedded link to a piece of content that lives outside Arc.
+Custom Embeds is a feature for Arc Composer that allows developers to build content elements in stories that store an embedded link to a piece of content that lives outside Arc.
 
 ## Requirements
 
