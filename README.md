@@ -5,7 +5,7 @@
 This project contains:
   * several reference implementations of Arc Custom Embeds
   * a "blank" custom embed implementation for quick-start
-  * a host application for testing without using Ellipsis
+  * a host application for testing without using Composer
 
 ## Documentation
 
