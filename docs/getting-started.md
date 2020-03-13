@@ -257,7 +257,7 @@ And we'll tweak the `render()` function just a bit to insert the data into this 
      }
 ```
 
-The search button shows results now. All that's left to do is let the user select one and send the data back to Ellipsis.
+The search button shows results now. All that's left to do is let the user select one and send the data back to Composer.
 
 Change handleClick to be:
 
@@ -521,7 +521,7 @@ Once again, we can test using the test tool.
 
 To wire these panels up in Composer, you'll need to host them on a public domain. Just zip up a bundle like you usually would and deploy to a test environment.
 
-Once they're uploaded, you can wire up Composer to use the panels in the settings page. See [these instructions](https://redirector.arcpublishing.com/alc/arc-products/ellipsis/user-docs/ellipsis-custom-embed-power-ups-for-rich-third-party-content/#Configuring-a-Custom-Embed-Integration).
+Once they're uploaded, you can wire up Composer to use the panels in the settings page. See [these instructions](https://redirector.arcpublishing.com/alc/arc-products/composer/user-docs/composer-custom-embed-power-ups-for-rich-third-party-content/#Configuring-a-Custom-Embed-Integration).
 
 Save a few documents with the embed in them, then go look at those documents published on the web.
 
