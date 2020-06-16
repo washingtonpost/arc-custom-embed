@@ -1,5 +1,8 @@
 template: cfn/templates/static-site.yml
 stack_name: static-site-customembed-prod
+tag_file:
+  - cfn/configs/tags/global.yml
+  - cfn/configs/tags/prod.yml
 region: us-east-1
 context:
   name: customembed
