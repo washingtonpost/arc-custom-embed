@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 
 export interface SettingsInputProps {
   storageKey: string
-  defaultValue: string
+  defaultValue: string,
+  name?: string
 }
 const VERSION = 2
 export default function SettingsInput(props: SettingsInputProps) {
@@ -23,7 +24,8 @@ export default function SettingsInput(props: SettingsInputProps) {
     <input
       type="text"
       className="form-control"
-      id="lastName"
+      id={props.name || 'lastName'}
+      name={props.name}
       placeholder=""
       value={value}
       onChange={event => {

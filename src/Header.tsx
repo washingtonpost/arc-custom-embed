@@ -13,12 +13,13 @@ export default function Header() {
                 <form className="needs-validation">
                   <div className="row">
                     <div className="col-md-9 mb-3">
-                      <label htmlFor="firstName" className="text-white">
+                      <label htmlFor="searchAPIUrl" className="text-white">
                         Search API Integration URL
                       </label>
                       <SettingsInput
                         storageKey="arc.custom_embed.searchApi"
                         defaultValue="https://d2o92lg4k51qh.cloudfront.net/audioSearchApi.html"
+                        name='searchAPIUrl'
                       />
                     </div>
                     <div className="col-md-3 mb-3">
@@ -33,12 +34,13 @@ export default function Header() {
                   </div>
                   <div className="row">
                     <div className="col-md-9 mb-3">
-                      <label htmlFor="firstName" className="text-white">
+                      <label htmlFor="viewAPIUrl" className="text-white">
                         View API Integration URL
                       </label>
                       <SettingsInput
                         storageKey="arc.custom_embed.viewApi"
                         defaultValue="https://d2o92lg4k51qh.cloudfront.net/audioViewApi.html"
+                        name="viewAPIUrl"
                       />
                     </div>
                     <div className="col-md-3 mb-3">
@@ -53,12 +55,13 @@ export default function Header() {
                   </div>
                   <div className="row">
                     <div className="col-md-9 mb-3">
-                      <label htmlFor="firstName" className="text-white">
+                      <label htmlFor="editAPIUrl" className="text-white">
                         Edit API Integration URL
                       </label>
                       <SettingsInput
                         storageKey="arc.custom_embed.editApi"
                         defaultValue="https://d2o92lg4k51qh.cloudfront.net/audioEditApi.html"
+                        name="editAPIUrl"
                       />
                     </div>
                     <div className="col-md-3 mb-3">
